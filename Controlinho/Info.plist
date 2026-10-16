@@ -27,6 +27,10 @@
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Controlinho needs local network access to find and control your Samsung TV.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>PixelifySans.ttf</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

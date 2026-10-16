@@ -25,6 +25,8 @@ targets:
         UILaunchScreen:
           UIColorName: ""
         UIUserInterfaceStyle: Dark
+        UIAppFonts:
+          - PixelifySans.ttf
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSLocalNetworkUsageDescription: Controlinho needs local network access to find and control your Samsung TV.

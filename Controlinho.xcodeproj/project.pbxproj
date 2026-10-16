@@ -14,10 +14,14 @@
 		55A6D99838424791C575C6EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 706A49FCBED7C20BF00B52A8 /* Assets.xcassets */; };
 		6B56D9A2D0D037A1B6123809 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C26D7463B2673B14B8F0579 /* TVStore.swift */; };
 		6D788803C6A3198D8C611841 /* TVKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A96B8B79113F4DF350559 /* TVKey.swift */; };
+		7CD2E49F0B3CA0FACCD7237E /* PixelKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393AF2DF073CFE1E5BEB9249 /* PixelKit.swift */; };
 		8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */; };
 		86DD4820A7758C25AE858895 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */; };
 		B2FE6CBC958A4E7E0FBBFE34 /* SmartThingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F870A618D448610B6A97EBEF /* SmartThingsSection.swift */; };
+		BBFC217CE91423FDA46B95B8 /* PixelifySans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45D67AF9120FA66BCDB17983 /* PixelifySans.ttf */; };
+		C6E305B3862E876108F2FE01 /* PixelifySans-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 362A40A377508B0609BE2A8A /* PixelifySans-OFL.txt */; };
 		CD04665D37878EA34002B98D /* LocalNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C524BDC53B80BE107D3897 /* LocalNetwork.swift */; };
+		D1ACF6813885C501D0989E68 /* PixelForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09178757A3903C31E267EEB /* PixelForm.swift */; };
 		D3B0D42415D49B5574C85FD3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E20B663F0D2C680061AA47 /* SetupView.swift */; };
 		E0EF47E82060BD49074D3128 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99BCABCD3D801BEA31DC41C6 /* Components.swift */; };
 		F8F77A363B99ADDC397C065E /* ControlinhoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */; };
@@ -27,8 +31,11 @@
 		039ABD375320512AB992A15F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		13ABE684518247FFAFF8681A /* TVSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSettingsView.swift; sourceTree = "<group>"; };
 		25D660D28D06C4D8BB8FB893 /* SamsungTVClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamsungTVClient.swift; sourceTree = "<group>"; };
+		362A40A377508B0609BE2A8A /* PixelifySans-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "PixelifySans-OFL.txt"; sourceTree = "<group>"; };
 		38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDiscovery.swift; sourceTree = "<group>"; };
+		393AF2DF073CFE1E5BEB9249 /* PixelKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelKit.swift; sourceTree = "<group>"; };
 		401541809F873B0AF003115F /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		45D67AF9120FA66BCDB17983 /* PixelifySans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PixelifySans.ttf; sourceTree = "<group>"; };
 		6656E0CF7A63AEB37ED38591 /* Controlinho.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Controlinho.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68C26777B4F2C0CB6C1FCEA3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		692A96B8B79113F4DF350559 /* TVKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVKey.swift; sourceTree = "<group>"; };
@@ -38,6 +45,7 @@
 		96C524BDC53B80BE107D3897 /* LocalNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNetwork.swift; sourceTree = "<group>"; };
 		98E20B663F0D2C680061AA47 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		99BCABCD3D801BEA31DC41C6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		D09178757A3903C31E267EEB /* PixelForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelForm.swift; sourceTree = "<group>"; };
 		D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
 		E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlinhoApp.swift; sourceTree = "<group>"; };
 		F870A618D448610B6A97EBEF /* SmartThingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartThingsSection.swift; sourceTree = "<group>"; };
@@ -51,6 +59,7 @@
 				E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */,
 				039ABD375320512AB992A15F /* Info.plist */,
 				9E29E1C9DF9BC6F2F306383C /* Models */,
+				CB2F8ED182F96E5967A6408D /* Resources */,
 				2CC8565363CCDF9D6FF074FC /* Services */,
 				AAA04B3377C46E67A5E2DEC5 /* Views */,
 			);
@@ -78,6 +87,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		602FB8B2F2B676C48009A9FF /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				362A40A377508B0609BE2A8A /* PixelifySans-OFL.txt */,
+				45D67AF9120FA66BCDB17983 /* PixelifySans.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		836FA063950BEDFC8647E3FD = {
 			isa = PBXGroup;
 			children = (
@@ -99,12 +117,22 @@
 			isa = PBXGroup;
 			children = (
 				99BCABCD3D801BEA31DC41C6 /* Components.swift */,
+				D09178757A3903C31E267EEB /* PixelForm.swift */,
+				393AF2DF073CFE1E5BEB9249 /* PixelKit.swift */,
 				D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */,
 				98E20B663F0D2C680061AA47 /* SetupView.swift */,
 				F870A618D448610B6A97EBEF /* SmartThingsSection.swift */,
 				13ABE684518247FFAFF8681A /* TVSettingsView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		CB2F8ED182F96E5967A6408D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				602FB8B2F2B676C48009A9FF /* Fonts */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		CE420A447BFE56DEB649150A /* Config */ = {
@@ -175,6 +203,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				55A6D99838424791C575C6EE /* Assets.xcassets in Resources */,
+				C6E305B3862E876108F2FE01 /* PixelifySans-OFL.txt in Resources */,
+				BBFC217CE91423FDA46B95B8 /* PixelifySans.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +219,8 @@
 				F8F77A363B99ADDC397C065E /* ControlinhoApp.swift in Sources */,
 				16DDF6EC1A9903F9FBBF29FB /* Keychain.swift in Sources */,
 				CD04665D37878EA34002B98D /* LocalNetwork.swift in Sources */,
+				D1ACF6813885C501D0989E68 /* PixelForm.swift in Sources */,
+				7CD2E49F0B3CA0FACCD7237E /* PixelKit.swift in Sources */,
 				8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */,
 				354E8DF0B676D0F73A2993D6 /* SamsungTVClient.swift in Sources */,
 				D3B0D42415D49B5574C85FD3 /* SetupView.swift in Sources */,

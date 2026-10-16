@@ -12,46 +12,49 @@ struct TVSettingsView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
+            PixelPage {
                 if let tv = store.tv {
-                    Section("TV") {
-                        LabeledContent("Name", value: tv.name)
-                        if let model = tv.model { LabeledContent("Model", value: model) }
-                        LabeledContent("IP address", value: tv.host)
-                        if let isWired = tv.isWired {
-                            LabeledContent("Connection", value: isWired ? "Ethernet cable" : "Wi-Fi")
+                    PixelSection(title: "TV") {
+                        PixelInfoRow(label: "Name", value: tv.name)
+                        if let model = tv.model {
+                            PixelDivider()
+                            PixelInfoRow(label: "Model", value: model)
                         }
-                        Button("Reconnect") {
+                        PixelDivider()
+                        PixelInfoRow(label: "IP address", value: tv.host)
+                        if let isWired = tv.isWired {
+                            PixelDivider()
+                            PixelInfoRow(label: "Connection", value: isWired ? "Ethernet cable" : "Wi-Fi")
+                        }
+                        PixelDivider()
+                        PixelActionRow(title: "Reconnect") {
                             client.connect(to: tv)
                             dismiss()
                         }
-                        Button("Switch to another TV") { showSetup = true }
+                        PixelDivider()
+                        PixelActionRow(title: "Switch to another TV") { showSetup = true }
                     }
 
-                    Section {
-                        LabeledContent("Reported by TV", value: tv.mac ?? "Not read yet")
+                    PixelSection(title: "Turn on from phone", footer: footer(for: tv), footerIsWarning: footerIsWarning(tv)) {
+                        PixelInfoRow(label: "Reported by TV", value: tv.mac ?? "Not read yet")
+                        PixelDivider()
                         TextField("e.g. 64:1C:AE:12:34:56", text: $manualMAC)
+                            .textFieldStyle(PixelFieldStyle())
                             .textInputAutocapitalization(.characters)
                             .autocorrectionDisabled()
-                            .font(.body.monospaced())
                             .onChange(of: manualMAC) { _, value in save(value) }
-                        Button(didWake ? "Wake signal sent" : "Send wake signal now") {
+                        PixelActionRow(title: didWake ? "Wake signal sent" : "Send wake signal now") {
                             guard let mac = store.tv?.wakeMAC else { return }
                             WakeOnLAN.wake(mac: mac, host: tv.host)
                             didWake = true
                         }
                         .disabled(tv.wakeMAC == nil)
-                    } header: {
-                        Text("Turn on from phone")
-                    } footer: {
-                        Text(footer(for: tv))
-                            .foregroundStyle(footerIsWarning(tv) ? Color.orange : Color.secondary)
                     }
 
                     SmartThingsSection()
 
-                    Section {
-                        Button("Forget TV", role: .destructive) {
+                    PixelSection {
+                        PixelActionRow(title: "Forget TV", color: Palette.red) {
                             client.disconnect()
                             store.tv = nil
                             dismiss()
@@ -59,11 +62,11 @@ struct TVSettingsView: View {
                     }
                 }
             }
-            .navigationTitle("TV Settings")
-            .navigationBarTitleDisplayMode(.inline)
+            .pixelNavigationBar("TV Settings")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .font(.pixel(17, weight: .bold))
                 }
             }
             .onAppear { manualMAC = store.tv?.manualMAC ?? "" }

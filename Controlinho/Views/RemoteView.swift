@@ -19,69 +19,67 @@ struct RemoteView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 28) {
+            VStack(spacing: 13) {
                 header
                 statusBanner
 
                 HStack {
-                    KeyButton(symbol: "power", label: "Power", tint: .red.opacity(0.75), action: power)
+                    KeyButton(art: .power, label: "Power", tone: .oxblood, action: power)
                     Spacer()
-                    KeyButton(symbol: "rectangle.on.rectangle", label: "Source") { client.send(.source) }
+                    KeyButton(art: .source, label: "Source") { client.send(.source) }
                     Spacer()
-                    KeyButton(symbol: "number", label: "Numbers") { showNumbers = true }
+                    KeyButton(art: .hash, label: "Numbers") { showNumbers = true }
                     Spacer()
-                    KeyButton(symbol: "info.circle", label: "Info") { client.send(.info) }
+                    KeyButton(art: .info, label: "Info") { client.send(.info) }
                 }
 
                 DPad { client.send($0) }
 
                 HStack {
-                    KeyButton(symbol: "arrow.uturn.backward", label: "Back") { client.send(.back) }
+                    KeyButton(art: .back, label: "Back") { client.send(.back) }
                     Spacer()
-                    KeyButton(symbol: "house.fill", label: "Home", size: 72) { client.send(.home) }
+                    KeyButton(art: .home, label: "Home", size: 66, tone: .brass) { client.send(.home) }
                     Spacer()
-                    KeyButton(symbol: "line.3.horizontal", label: "Menu") { client.send(.menu) }
+                    KeyButton(art: .menu, label: "Menu") { client.send(.menu) }
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 30)
 
                 HStack(alignment: .center) {
-                    Rocker(title: "VOL", upSymbol: "plus", downSymbol: "minus",
+                    Rocker(title: "VOL", up: .plus, down: .minus,
                            onUp: { client.send(.volumeUp) }, onDown: { client.send(.volumeDown) })
                     Spacer()
-                    VStack(spacing: 16) {
-                        KeyButton(symbol: "speaker.slash.fill", label: "Mute") { client.send(.mute) }
-                        KeyButton(symbol: "list.bullet.rectangle", label: "Guide") { client.send(.guide) }
+                    VStack(spacing: 14) {
+                        KeyButton(art: .mute, label: "Mute") { client.send(.mute) }
+                        KeyButton(art: .guide, label: "Guide") { client.send(.guide) }
                     }
                     Spacer()
-                    Rocker(title: "CH", upSymbol: "chevron.up", downSymbol: "chevron.down",
+                    Rocker(title: "CH", up: .arrowUp, down: PixelArt(rows: PixelArt.arrowUp.rows.reversed()),
                            onUp: { client.send(.channelUp) }, onDown: { client.send(.channelDown) })
                 }
                 .padding(.horizontal, 12)
 
                 HStack {
-                    KeyButton(symbol: "backward.fill", label: "Rewind", size: 56) { client.send(.rewind) }
+                    KeyButton(art: PixelArt.fastForward.mirrored, label: "Rewind", size: 52) { client.send(.rewind) }
                     Spacer()
-                    KeyButton(symbol: "play.fill", label: "Play", size: 56) { client.send(.play) }
+                    KeyButton(art: .play, label: "Play", size: 52) { client.send(.play) }
                     Spacer()
-                    KeyButton(symbol: "pause.fill", label: "Pause", size: 56) { client.send(.pause) }
+                    KeyButton(art: .pause, label: "Pause", size: 52) { client.send(.pause) }
                     Spacer()
-                    KeyButton(symbol: "forward.fill", label: "Fast forward", size: 56) { client.send(.fastForward) }
+                    KeyButton(art: .fastForward, label: "Fast forward", size: 52) { client.send(.fastForward) }
                 }
 
                 apps
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 32)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 24)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(
-            LinearGradient(colors: [Color(white: 0.11), .black], startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
-        )
+        .background(IronFloor())
         .sheet(isPresented: $showNumbers) {
             NumberPad { client.send($0) }
-                .presentationDetents([.height(380)])
+                .presentationDetents([.height(400)])
                 .presentationDragIndicator(.visible)
+                .presentationBackground(Palette.bar)
         }
         .sheet(isPresented: $showSettings) {
             TVSettingsView()
@@ -98,31 +96,29 @@ struct RemoteView: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            Circle()
-                .fill(statusColor)
-                .frame(width: 10, height: 10)
-                .shadow(color: statusColor, radius: 4)
-            VStack(alignment: .leading, spacing: 1) {
+            PixelIcon(.gem)
+                .foregroundStyle(statusColor)
+            VStack(alignment: .leading, spacing: 0) {
                 Text(store.tv?.name ?? "Samsung TV")
-                    .font(.headline)
+                    .font(.pixel(19, weight: .bold))
+                    .foregroundStyle(Palette.textLight)
                     .lineLimit(1)
                 Text(statusText)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.pixel(14))
+                    .foregroundStyle(Palette.textSoft)
             }
             Spacer()
             // A plain button rather than a Menu: menus close whenever the connection state
             // re-renders the header, which happens constantly while reconnecting.
             Button { showSettings = true } label: {
-                Image(systemName: "gearshape.fill")
-                    .font(.system(size: 18, weight: .semibold))
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(RemoteStyle.surface))
+                PixelIcon(.gear).frame(width: 42, height: 40)
             }
-            .foregroundStyle(.white)
+            .buttonStyle(PixelButtonStyle(tone: .iron, depth: Pixel.unit))
             .accessibilityLabel("TV Settings")
         }
-        .padding(.top, 8)
+        .padding(.leading, Pixel.unit * 2)
+        .pixelPanel(.copper, padding: Pixel.unit * 3)
+        .padding(.top, 6)
     }
 
     @ViewBuilder
@@ -138,22 +134,20 @@ struct RemoteView: View {
     private func wakeBanner(_ status: WakeStatus) -> some View {
         switch status {
         case .waking:
-            banner(icon: "power", text: "Turning on the TV…", color: .cyan) {
-                ProgressView()
+            banner(art: .power, text: "Turning on the TV…", color: Palette.brass) {
+                ProgressView().tint(Palette.text)
             }
         case .failed(let reason):
-            banner(icon: "exclamationmark.triangle.fill",
+            banner(art: .warning,
                    text: reason ?? "The TV didn't turn on. Check that Power On with Mobile is enabled on the TV.",
-                   color: .orange) {
-                Button("Settings") { showSettings = true }
-                    .font(.subheadline.weight(.semibold))
+                   color: Palette.red) {
+                bannerButton("Settings") { showSettings = true }
             }
         case .notSetUp:
-            banner(icon: "exclamationmark.triangle.fill",
+            banner(art: .warning,
                    text: "To turn the TV on from your phone, add its MAC address or connect SmartThings.",
-                   color: .orange) {
-                Button("Add") { showSettings = true }
-                    .font(.subheadline.weight(.semibold))
+                   color: Palette.red) {
+                bannerButton("Add") { showSettings = true }
             }
         }
     }
@@ -162,11 +156,10 @@ struct RemoteView: View {
     private var connectionBanner: some View {
         switch client.state {
         case .waitingForApproval:
-            banner(icon: "hand.raised.fill", text: "Select Allow on your TV to pair Controlinho.", color: .yellow)
+            banner(art: .warning, text: "Select Allow on your TV to pair Controlinho.", color: Palette.brass)
         case .failed(let message):
-            banner(icon: "exclamationmark.triangle.fill", text: message, color: .orange) {
-                Button("Retry") { client.reconnectIfNeeded() }
-                    .font(.subheadline.weight(.semibold))
+            banner(art: .warning, text: message, color: Palette.red) {
+                bannerButton("Retry") { client.reconnectIfNeeded() }
             }
         default:
             EmptyView()
@@ -174,44 +167,69 @@ struct RemoteView: View {
     }
 
     private func banner(
-        icon: String, text: String, color: Color,
+        art: PixelArt, text: String, color: Color,
         @ViewBuilder trailing: () -> some View = { EmptyView() }
     ) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon).foregroundStyle(color)
-            Text(text).font(.subheadline).frame(maxWidth: .infinity, alignment: .leading)
+            PixelIcon(art).foregroundStyle(color)
+            Text(text)
+                .font(.pixel(15))
+                .foregroundStyle(Palette.text)
+                .frame(maxWidth: .infinity, alignment: .leading)
             trailing()
         }
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(color.opacity(0.15)))
+        .pixelPanel(.iron)
     }
 
+    private func bannerButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.pixel(15, weight: .bold))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+        }
+        .buttonStyle(PixelButtonStyle(tone: .brass, depth: Pixel.unit))
+    }
+
+    /// The app shortcuts, styled as a game hotbar of item slots.
     private var apps: some View {
         VStack(spacing: 10) {
-            HStack(spacing: 12) {
+            HStack(spacing: Pixel.unit * 2) {
                 ForEach(TVApp.shortcuts) { app in
                     Button { open(app) } label: {
-                        VStack(spacing: 6) {
-                            if launchingApp == app.id {
-                                ProgressView().frame(height: 26)
-                            } else {
-                                Image(systemName: app.symbol).font(.system(size: 22))
+                        VStack(spacing: 4) {
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color(hex: app.tileColor))
+                                    .overlay(Rectangle().strokeBorder(Palette.ink, lineWidth: Pixel.unit))
+                                if launchingApp == app.id {
+                                    ProgressView().tint(Palette.textLight)
+                                } else {
+                                    Text(app.initial)
+                                        .font(.pixel(24, weight: .bold))
+                                        .foregroundStyle(Palette.textLight)
+                                }
                             }
-                            Text(app.name).font(.caption2.weight(.medium)).lineLimit(1)
+                            .frame(width: 39, height: 39)
+                            Text(app.name)
+                                .pixelFont(13)
+                                .lineLimit(1)
                         }
                         .frame(maxWidth: .infinity)
-                        .frame(height: 64)
-                        .contentShape(Rectangle())
+                        .padding(.vertical, 8)
                     }
-                    .buttonStyle(TileButtonStyle())
+                    .buttonStyle(PixelButtonStyle(tone: .slot, depth: Pixel.unit))
                     .disabled(launchingApp != nil)
                 }
             }
+            .pixelPanel(.copper, padding: Pixel.unit * 3)
+
             if let appMessage {
                 Text(appMessage)
-                    .font(.footnote)
-                    .foregroundStyle(.orange)
+                    .font(.pixel(15))
+                    .foregroundStyle(Palette.text)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .pixelPanel(.iron, padding: Pixel.unit * 3)
                     .transition(.opacity)
             }
         }
@@ -272,10 +290,10 @@ struct RemoteView: View {
 
     private var statusColor: Color {
         switch client.state {
-        case .connected: .green
-        case .connecting, .waitingForApproval: .yellow
-        case .disconnected: .gray
-        case .failed: .red
+        case .connected: Palette.green
+        case .connecting, .waitingForApproval: Palette.yellow
+        case .disconnected: Palette.textSoft
+        case .failed: Palette.red
         }
     }
 
@@ -290,43 +308,29 @@ struct RemoteView: View {
     }
 }
 
-private struct TileButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundStyle(.white)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(configuration.isPressed ? RemoteStyle.surfacePressed : RemoteStyle.surface)
-                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(RemoteStyle.stroke))
-            )
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.spring(duration: 0.15), value: configuration.isPressed)
-            .sensoryFeedback(.impact(weight: .light), trigger: configuration.isPressed) { _, pressed in pressed }
-    }
-}
-
 private struct NumberPad: View {
     let onKey: (TVKey) -> Void
 
     var body: some View {
-        let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
-        LazyVGrid(columns: columns, spacing: 16) {
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
+        LazyVGrid(columns: columns, spacing: 14) {
             ForEach(1...9, id: \.self) { digit($0) }
             Color.clear.frame(height: 1)
             digit(0)
         }
-        .padding(28)
+        .pixelPanel(.copper, padding: Pixel.unit * 5)
+        .padding(.horizontal, 20)
+        .padding(.top, 24)
     }
 
     private func digit(_ n: Int) -> some View {
         Button { onKey(.digit(n)) } label: {
             Text("\(n)")
-                .font(.system(size: 26, weight: .semibold, design: .rounded))
+                .font(.pixel(28, weight: .bold))
                 .frame(maxWidth: .infinity)
-                .frame(height: 60)
-                .contentShape(Capsule())
+                .frame(height: 56)
         }
-        .buttonStyle(KeyButtonStyle())
+        .buttonStyle(PixelButtonStyle(tone: .iron))
     }
 }
 
@@ -335,5 +339,4 @@ private struct NumberPad: View {
         .environment(TVStore())
         .environment(SamsungTVClient())
         .environment(SmartThings())
-        .preferredColorScheme(.dark)
 }

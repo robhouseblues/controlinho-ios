@@ -14,80 +14,89 @@ struct SetupView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
+            PixelPage {
+                PixelSection(title: "On this network", trailing: scanButton) {
                     if isScanning && found.isEmpty {
                         HStack(spacing: 12) {
-                            ProgressView()
-                            Text("Looking for Samsung TVs…").foregroundStyle(.secondary)
+                            ProgressView().tint(Palette.text)
+                            Text("Looking for Samsung TVs…").pixelFont(16).foregroundStyle(Palette.textSoft)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(12)
                     } else if found.isEmpty {
                         Text("No TVs found. Make sure the TV is on and connected to the same Wi-Fi.")
-                            .foregroundStyle(.secondary)
+                            .pixelFont(16)
+                            .foregroundStyle(Palette.textSoft)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(12)
                     }
-                    ForEach(found) { tv in
+                    ForEach(Array(found.enumerated()), id: \.element.id) { index, tv in
+                        if index > 0 { PixelDivider() }
                         Button { pair(tv.savedTV) } label: {
                             HStack(spacing: 14) {
-                                Image(systemName: "tv")
-                                    .font(.title2)
-                                    .foregroundStyle(.tint)
+                                PixelIcon(.source).foregroundStyle(Palette.accent)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(tv.name).foregroundStyle(.primary)
+                                    Text(tv.name).pixelFont(17, weight: .semibold).foregroundStyle(Palette.text)
                                     Text([tv.model, tv.host].compactMap { $0 }.joined(separator: " · "))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .pixelFont(13)
+                                        .foregroundStyle(Palette.textSoft)
                                 }
                                 Spacer()
-                                Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                                PixelIcon(.arrowUp, scale: 2)
+                                    .rotationEffect(.degrees(90))
+                                    .foregroundStyle(Palette.textSoft)
                             }
+                            .padding(12)
+                            .contentShape(Rectangle())
                         }
-                    }
-                } header: {
-                    HStack {
-                        Text("On this network")
-                        Spacer()
-                        if !isScanning {
-                            Button("Scan again") { Task { await scan() } }
-                                .font(.caption)
-                                .textCase(nil)
-                        }
+                        .buttonStyle(PixelRowButtonStyle())
                     }
                 }
 
-                Section {
+                PixelSection(
+                    title: "Enter IP address",
+                    footer: manualError ?? "Find it on the TV under Settings › General › Network › Network Status.",
+                    footerIsWarning: manualError != nil
+                ) {
                     TextField("192.168.0.42", text: $manualHost)
+                        .textFieldStyle(PixelFieldStyle())
                         .keyboardType(.numbersAndPunctuation)
                         .submitLabel(.go)
                         .onSubmit { Task { await addManual() } }
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                    Button {
-                        Task { await addManual() }
-                    } label: {
-                        if isCheckingManual {
-                            ProgressView()
-                        } else {
-                            Text("Connect")
-                        }
+                    if isCheckingManual {
+                        ProgressView().tint(Palette.text).padding(12)
+                    } else {
+                        PixelActionRow(title: "Connect") { Task { await addManual() } }
+                            .disabled(!LocalNetwork.isPrivateIPv4(manualHost))
                     }
-                    .disabled(!LocalNetwork.isPrivateIPv4(manualHost) || isCheckingManual)
-                } header: {
-                    Text("Enter IP address")
-                } footer: {
-                    Text(manualError ?? "Find it on the TV under Settings › General › Network › Network Status.")
-                        .foregroundStyle(manualError == nil ? Color.secondary : Color.red)
                 }
             }
-            .navigationTitle("Connect a TV")
+            .pixelNavigationBar("Connect a TV")
             .toolbar {
                 if store.tv != nil {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
+                            .font(.pixel(17))
                     }
                 }
             }
             .task { await scan() }
         }
+    }
+
+    private var scanButton: AnyView? {
+        guard !isScanning else { return nil }
+        return AnyView(
+            Button { Task { await scan() } } label: {
+                Text("Scan again")
+                    .pixelFont(14, weight: .bold)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(PixelButtonStyle(tone: .brass, depth: Pixel.unit))
+        )
     }
 
     private func scan() async {

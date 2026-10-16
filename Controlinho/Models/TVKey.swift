@@ -35,17 +35,19 @@ enum TVKey: String {
 /// Apps that can be launched directly on Tizen TVs.
 struct TVApp: Identifiable, Hashable {
     let name: String
-    let symbol: String
+    /// Letter and color for the app's pixel tile.
+    let initial: String
+    let tileColor: UInt32
     /// Samsung app IDs to try in order; they differ between TV generations and regions.
     let ids: [String]
 
     var id: String { name }
 
     static let shortcuts: [TVApp] = [
-        TVApp(name: "Netflix", symbol: "n.square.fill", ids: ["3201907018807", "11101200001"]),
-        TVApp(name: "YouTube", symbol: "play.rectangle.fill", ids: ["111299001912"]),
-        TVApp(name: "Prime Video", symbol: "p.square.fill", ids: ["3201910019365", "3201512006785"]),
-        TVApp(name: "Disney+", symbol: "sparkles.tv.fill", ids: ["3201901017640"]),
+        TVApp(name: "Netflix", initial: "N", tileColor: 0x8E2C24, ids: ["3201907018807", "11101200001"]),
+        TVApp(name: "YouTube", initial: "Y", tileColor: 0x9C3B27, ids: ["111299001912"]),
+        TVApp(name: "Prime", initial: "P", tileColor: 0x2D5B82, ids: ["3201910019365", "3201512006785"]),
+        TVApp(name: "Disney+", initial: "D", tileColor: 0x2C3B6E, ids: ["3201901017640"]),
     ]
 }
 

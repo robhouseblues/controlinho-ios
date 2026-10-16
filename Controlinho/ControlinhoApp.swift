@@ -14,7 +14,7 @@ struct ControlinhoApp: App {
                 .environment(client)
                 .environment(smartThings)
                 .preferredColorScheme(.dark)
-                .tint(.cyan)
+                .tint(Palette.brass)
                 .onAppear {
                     client.onTokenUpdate = { [store] token in store.updateToken(token) }
                     client.onConnected = { [store] in

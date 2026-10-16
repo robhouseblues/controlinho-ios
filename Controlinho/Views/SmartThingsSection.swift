@@ -13,49 +13,47 @@ struct SmartThingsSection: View {
     @State private var messageIsError = false
 
     var body: some View {
-        Section {
+        PixelSection(
+            title: "SmartThings",
+            footer: message ?? footer,
+            footerIsWarning: messageIsError,
+            trailing: isWorking ? AnyView(ProgressView().tint(Palette.textLight)) : nil
+        ) {
             if !smartThings.isConfigured {
-                NavigationLink("Set up SmartThings") { SmartThingsCredentialsView() }
+                PixelLinkRow(title: "Set up SmartThings") { SmartThingsCredentialsView() }
             } else if !smartThings.isSignedIn {
-                Button("Sign in with Samsung account") { Task { await signIn() } }
+                PixelActionRow(title: "Sign in with Samsung account") { Task { await signIn() } }
                     .disabled(isWorking)
-                NavigationLink("App credentials") { SmartThingsCredentialsView() }
+                PixelDivider()
+                PixelLinkRow(title: "App credentials") { SmartThingsCredentialsView() }
             } else {
-                LabeledContent("TV", value: store.tv?.smartThingsDeviceName ?? "Not chosen")
+                PixelInfoRow(label: "TV", value: store.tv?.smartThingsDeviceName ?? "Not chosen")
+                PixelDivider()
                 if let devices {
                     ForEach(devices) { device in
-                        Button { choose(device) } label: {
-                            HStack {
-                                Text(device.displayName).foregroundStyle(.primary)
-                                Spacer()
-                                if device.id == store.tv?.smartThingsDeviceID {
-                                    Image(systemName: "checkmark").foregroundStyle(.tint)
-                                }
-                            }
-                        }
+                        PixelActionRow(
+                            title: device.displayName,
+                            color: Palette.text,
+                            checked: device.id == store.tv?.smartThingsDeviceID
+                        ) { choose(device) }
+                        PixelDivider()
                     }
                 } else {
-                    Button("Choose TV") { Task { await loadDevices() } }
+                    PixelActionRow(title: "Choose TV") { Task { await loadDevices() } }
                         .disabled(isWorking)
+                    PixelDivider()
                 }
                 if let deviceID = store.tv?.smartThingsDeviceID {
-                    Button("Turn TV on now") { Task { await turnOn(deviceID) } }
+                    PixelActionRow(title: "Turn TV on now") { Task { await turnOn(deviceID) } }
                         .disabled(isWorking)
+                    PixelDivider()
                 }
-                Button("Sign out", role: .destructive) {
+                PixelActionRow(title: "Sign out", color: Palette.red) {
                     smartThings.signOut()
                     devices = nil
                     message = nil
                 }
             }
-        } header: {
-            HStack {
-                Text("SmartThings")
-                if isWorking { ProgressView().controlSize(.small) }
-            }
-        } footer: {
-            Text(message ?? footer)
-                .foregroundStyle(messageIsError ? Color.orange : Color.secondary)
         }
     }
 
@@ -135,41 +133,42 @@ struct SmartThingsCredentialsView: View {
     @State private var redirectURL = ""
 
     var body: some View {
-        Form {
-            Section {
+        PixelPage {
+            PixelSection(
+                footer: "Copy these from the output of smartthings apps:create. The redirect URL must match the one you registered exactly, including any trailing slash. They're stored in the iPhone's Keychain."
+            ) {
                 Group {
                     TextField("Client ID", text: $clientID)
                     SecureField("Client Secret", text: $clientSecret)
                     TextField("Redirect URL (https://…)", text: $redirectURL)
                         .keyboardType(.URL)
                 }
+                .textFieldStyle(PixelFieldStyle())
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-                .font(.body.monospaced())
-            } footer: {
-                Text("Copy these from the output of `smartthings apps:create`. The redirect URL must match the one you registered exactly, including any trailing slash. They're stored in the iPhone's Keychain.")
             }
 
             if smartThings.isConfigured {
-                Section {
-                    Button("Remove SmartThings", role: .destructive) {
+                PixelSection {
+                    PixelActionRow(title: "Remove SmartThings", color: Palette.red) {
                         smartThings.save(nil)
                         dismiss()
                     }
                 }
             }
         }
-        .navigationTitle("SmartThings App")
-        .navigationBarTitleDisplayMode(.inline)
+        .pixelNavigationBar("SmartThings App")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
+                Button {
                     smartThings.save(SmartThings.Credentials(
                         clientID: clientID.trimmingCharacters(in: .whitespaces),
                         clientSecret: clientSecret.trimmingCharacters(in: .whitespaces),
                         redirectURL: redirectURL.trimmingCharacters(in: .whitespaces)
                     ))
                     dismiss()
+                } label: {
+                    Text("Save").font(.pixel(17, weight: .bold))
                 }
                 .disabled(!isValid)
             }
