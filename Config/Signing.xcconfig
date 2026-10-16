@@ -1,0 +1,5 @@
+// Shared signing settings. Your own Apple Developer Team ID goes in Local.xcconfig
+// (git-ignored) so it never ends up in the repository. To set it up:
+//   cp Config/Local.xcconfig.example Config/Local.xcconfig
+// then put your Team ID in it (Xcode › Settings › Accounts, or developer.apple.com › Membership).
+#include? "Local.xcconfig"

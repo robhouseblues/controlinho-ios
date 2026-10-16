@@ -11,6 +11,9 @@ targets:
   Controlinho:
     type: application
     platform: iOS
+    configFiles:
+      Debug: Config/Signing.xcconfig
+      Release: Config/Signing.xcconfig
     sources:
       - Controlinho
     info:

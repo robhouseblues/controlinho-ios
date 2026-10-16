@@ -27,7 +27,8 @@
 		13ABE684518247FFAFF8681A /* TVSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSettingsView.swift; sourceTree = "<group>"; };
 		25D660D28D06C4D8BB8FB893 /* SamsungTVClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamsungTVClient.swift; sourceTree = "<group>"; };
 		38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDiscovery.swift; sourceTree = "<group>"; };
-		6656E0CF7A63AEB37ED38591 /* Controlinho.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Controlinho.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		401541809F873B0AF003115F /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		6656E0CF7A63AEB37ED38591 /* Controlinho.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Controlinho.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68C26777B4F2C0CB6C1FCEA3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		692A96B8B79113F4DF350559 /* TVKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVKey.swift; sourceTree = "<group>"; };
 		7C26D7463B2673B14B8F0579 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 		836FA063950BEDFC8647E3FD = {
 			isa = PBXGroup;
 			children = (
+				CE420A447BFE56DEB649150A /* Config */,
 				1010091EEB8B8AAC15061AEC /* Controlinho */,
 				3A97736D9DA7797BA1E9ED66 /* Products */,
 			);
@@ -100,6 +102,14 @@
 				13ABE684518247FFAFF8681A /* TVSettingsView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		CE420A447BFE56DEB649150A /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				401541809F873B0AF003115F /* Signing.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -237,11 +247,11 @@
 		};
 		689615CB77873883A1DB56FA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8V2P6U9QD5;
 				INFOPLIST_FILE = Controlinho/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -255,11 +265,11 @@
 		};
 		C94831F8D91C08577C996349 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8V2P6U9QD5;
 				INFOPLIST_FILE = Controlinho/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
