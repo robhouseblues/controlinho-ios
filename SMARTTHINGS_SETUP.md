@@ -5,19 +5,19 @@ Controlinho can switch your TV on through Samsung's SmartThings cloud. This work
 You'll need:
 
 - Your TV added to the **SmartThings** app on your phone, under the Samsung account you'll sign in with.
-- A free GitHub account (or any other place that can host one static web page over `https://`).
 - A Mac with [Homebrew](https://brew.sh).
 
-## 1. Host the redirect page
+## 1. The redirect page
 
-SmartThings only sends you back after login to an `https://` address. The page in [`oauth-redirect/index.html`](oauth-redirect/index.html) catches that and forwards you into the app.
+SmartThings only sends you back after login to an `https://` address. The page in [`oauth-redirect/index.html`](oauth-redirect/index.html) catches that and forwards you into the app. This repository already hosts it with GitHub Pages at:
 
-1. On GitHub, create a new **public** repository named `controlinho-oauth`.
-2. Upload `oauth-redirect/index.html` to the root of that repository, keeping the name `index.html`.
-3. In the repository, go to **Settings › Pages**, set **Source** to *Deploy from a branch*, choose `main` and `/ (root)`, and save.
-4. After a minute your page is live at `https://<your-github-username>.github.io/controlinho-oauth/`.
+```
+https://robhouseblues.github.io/controlinho-ios/oauth-redirect/
+```
 
-Write down that URL **exactly, including the trailing slash**. You'll use it twice below, and both must match character for character.
+Use that URL **exactly, including the trailing slash**. You'll enter it twice below, and both must match character for character.
+
+> **Using a fork?** Turn on GitHub Pages for your fork (**Settings › Pages**, *Deploy from a branch*, `main`, `/ (root)`) and use `https://<your-github-username>.github.io/<repo-name>/oauth-redirect/` instead. The page only forwards the sign-in result to the app, so it never sees your client secret.
 
 ## 2. Create the SmartThings app
 
@@ -43,7 +43,7 @@ The first time you run it, a browser window opens so you can log in to your Sams
 | Icon Image URL | leave empty |
 | Target URL | leave empty |
 | Scopes | select **r:devices:\*** and **x:devices:\*** |
-| Redirect URIs | add your page URL from step 1, then finish |
+| Redirect URIs | add the redirect page URL from step 1, then finish |
 
 At the end it prints an **OAuth Client Id** and **OAuth Client Secret**. Copy both somewhere safe right away. The secret is only shown once. If you lose it, run `smartthings apps:oauth:generate` to get a new one.
 
