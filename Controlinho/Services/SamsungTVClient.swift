@@ -192,15 +192,46 @@ final class SamsungTVClient {
         ])
     }
 
-    func launch(_ app: TVApp) {
-        enqueue([
-            "method": "ms.channel.emit",
-            "params": [
-                "event": "ed.apps.launch",
-                "to": "host",
-                "data": ["appId": app.id, "action_type": "DEEP_LINK"],
-            ],
-        ])
+    enum LaunchResult {
+        case launched
+        case notInstalled
+    }
+
+    /// Opens an app on the TV.
+    ///
+    /// Tries the TV's REST endpoint first, which reports whether the app exists, then falls
+    /// back to the WebSocket launch command for firmware that blocks REST launches.
+    func launch(_ app: TVApp) async -> LaunchResult {
+        guard let host = tv?.host else { return .launched }
+        var restWorks = false
+        for id in app.ids {
+            let status = await restLaunch(host: host, appID: id)
+            if (200..<300).contains(status) { return .launched }
+            if status == 404 { restWorks = true }
+        }
+        // Every ID came back "not found" from a working endpoint: the app isn't installed.
+        if restWorks { return .notInstalled }
+
+        for id in app.ids {
+            enqueue([
+                "method": "ms.channel.emit",
+                "params": [
+                    "event": "ed.apps.launch",
+                    "to": "host",
+                    "data": ["appId": id, "action_type": "DEEP_LINK", "metaTag": ""],
+                ],
+            ])
+        }
+        return .launched
+    }
+
+    /// `POST /api/v2/applications/<id>`; returns the HTTP status, or 0 if the TV didn't answer.
+    private func restLaunch(host: String, appID: String) async -> Int {
+        guard let url = URL(string: "http://\(host):8001/api/v2/applications/\(appID)") else { return 0 }
+        var request = URLRequest(url: url, timeoutInterval: 3)
+        request.httpMethod = "POST"
+        let response = try? await URLSession.shared.data(for: request).1
+        return (response as? HTTPURLResponse)?.statusCode ?? 0
     }
 
     private func enqueue(_ payload: [String: Any]) {

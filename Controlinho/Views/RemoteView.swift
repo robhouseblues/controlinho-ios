@@ -8,6 +8,8 @@ struct RemoteView: View {
     @State private var showNumbers = false
     @State private var showSettings = false
     @State private var wake: WakeStatus?
+    @State private var launchingApp: String?
+    @State private var appMessage: String?
 
     private enum WakeStatus: Equatable {
         case waking
@@ -185,18 +187,46 @@ struct RemoteView: View {
     }
 
     private var apps: some View {
-        HStack(spacing: 12) {
-            ForEach(TVApp.shortcuts) { app in
-                Button { client.launch(app) } label: {
-                    VStack(spacing: 6) {
-                        Image(systemName: app.symbol).font(.system(size: 22))
-                        Text(app.name).font(.caption2.weight(.medium)).lineLimit(1)
+        VStack(spacing: 10) {
+            HStack(spacing: 12) {
+                ForEach(TVApp.shortcuts) { app in
+                    Button { open(app) } label: {
+                        VStack(spacing: 6) {
+                            if launchingApp == app.id {
+                                ProgressView().frame(height: 26)
+                            } else {
+                                Image(systemName: app.symbol).font(.system(size: 22))
+                            }
+                            Text(app.name).font(.caption2.weight(.medium)).lineLimit(1)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 64)
+                        .contentShape(Rectangle())
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 64)
-                    .contentShape(Rectangle())
+                    .buttonStyle(TileButtonStyle())
+                    .disabled(launchingApp != nil)
                 }
-                .buttonStyle(TileButtonStyle())
+            }
+            if let appMessage {
+                Text(appMessage)
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .transition(.opacity)
+            }
+        }
+    }
+
+    private func open(_ app: TVApp) {
+        launchingApp = app.id
+        appMessage = nil
+        Task {
+            let result = await client.launch(app)
+            launchingApp = nil
+            if result == .notInstalled {
+                withAnimation { appMessage = "\(app.name) isn't installed on this TV." }
+                try? await Task.sleep(for: .seconds(4))
+                withAnimation { if appMessage?.hasPrefix(app.name) == true { appMessage = nil } }
             }
         }
     }

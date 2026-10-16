@@ -34,15 +34,18 @@ enum TVKey: String {
 
 /// Apps that can be launched directly on Tizen TVs.
 struct TVApp: Identifiable, Hashable {
-    let id: String
     let name: String
     let symbol: String
+    /// Samsung app IDs to try in order; they differ between TV generations and regions.
+    let ids: [String]
+
+    var id: String { name }
 
     static let shortcuts: [TVApp] = [
-        TVApp(id: "3201907018807", name: "Netflix", symbol: "n.square.fill"),
-        TVApp(id: "111299001912", name: "YouTube", symbol: "play.rectangle.fill"),
-        TVApp(id: "3201910019365", name: "Prime Video", symbol: "p.square.fill"),
-        TVApp(id: "3201901017640", name: "Disney+", symbol: "sparkles.tv.fill"),
+        TVApp(name: "Netflix", symbol: "n.square.fill", ids: ["3201907018807", "11101200001"]),
+        TVApp(name: "YouTube", symbol: "play.rectangle.fill", ids: ["111299001912"]),
+        TVApp(name: "Prime Video", symbol: "p.square.fill", ids: ["3201910019365", "3201512006785"]),
+        TVApp(name: "Disney+", symbol: "sparkles.tv.fill", ids: ["3201901017640"]),
     ]
 }
 
