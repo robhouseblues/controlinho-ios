@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Controlinho</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+           font: 17px -apple-system, system-ui, sans-serif; background: #000; color: #fff; }
+    a { color: #5ac8fa; }
+  </style>
+</head>
+<body>
+  <p id="status">Returning to Controlinho…</p>
+  <script>
+    // SmartThings only redirects to https:// URLs, so this page forwards the
+    // sign-in result (?code=…&state=…) to the app's controlinho:// scheme.
+    var target = "controlinho://oauth" + window.location.search;
+    window.location.replace(target);
+    document.getElementById("status").innerHTML =
+      'Returning to Controlinho… <a href="' + target.replace(/"/g, "&quot;") + '">Tap here</a> if nothing happens.';
+  </script>
+</body>
+</html>
