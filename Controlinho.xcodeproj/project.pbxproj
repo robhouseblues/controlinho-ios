@@ -11,6 +11,7 @@
 		28C14B0D97867E35E3E49378 /* SmartThings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD73D9DF220F8D4B5D33A44 /* SmartThings.swift */; };
 		2E93CABF8CB409B4D8B21542 /* TVSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13ABE684518247FFAFF8681A /* TVSettingsView.swift */; };
 		354E8DF0B676D0F73A2993D6 /* SamsungTVClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D660D28D06C4D8BB8FB893 /* SamsungTVClient.swift */; };
+		55A6D99838424791C575C6EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 706A49FCBED7C20BF00B52A8 /* Assets.xcassets */; };
 		6B56D9A2D0D037A1B6123809 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C26D7463B2673B14B8F0579 /* TVStore.swift */; };
 		6D788803C6A3198D8C611841 /* TVKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A96B8B79113F4DF350559 /* TVKey.swift */; };
 		8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */; };
@@ -31,6 +32,7 @@
 		6656E0CF7A63AEB37ED38591 /* Controlinho.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Controlinho.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68C26777B4F2C0CB6C1FCEA3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		692A96B8B79113F4DF350559 /* TVKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVKey.swift; sourceTree = "<group>"; };
+		706A49FCBED7C20BF00B52A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C26D7463B2673B14B8F0579 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
 		8AD73D9DF220F8D4B5D33A44 /* SmartThings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartThings.swift; sourceTree = "<group>"; };
 		96C524BDC53B80BE107D3897 /* LocalNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNetwork.swift; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 		1010091EEB8B8AAC15061AEC /* Controlinho */ = {
 			isa = PBXGroup;
 			children = (
+				706A49FCBED7C20BF00B52A8 /* Assets.xcassets */,
 				E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */,
 				039ABD375320512AB992A15F /* Info.plist */,
 				9E29E1C9DF9BC6F2F306383C /* Models */,
@@ -120,6 +123,7 @@
 			buildConfigurationList = 218C7583B664BA64480C8846 /* Build configuration list for PBXNativeTarget "Controlinho" */;
 			buildPhases = (
 				DA7FCB417293176FA629FDC0 /* Sources */,
+				87D2C4B60ED8100396F5DE7E /* Resources */,
 			);
 			buildRules = (
 			);
@@ -164,6 +168,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		87D2C4B60ED8100396F5DE7E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55A6D99838424791C575C6EE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DA7FCB417293176FA629FDC0 /* Sources */ = {
