@@ -51,7 +51,7 @@ struct OKIntent: AppIntent {
 /// Turns the TV off if it's on, or wakes it if it's in standby.
 struct PowerIntent: AppIntent {
     static let title: LocalizedStringResource = "Toggle TV Power"
-    static let description = IntentDescription("Turns your Samsung TV on or off.")
+    static let description = IntentDescription("Turns your TV on or off.")
 
     func perform() async throws -> some IntentResult {
         guard let tv = SharedStore.loadTV() else { throw QuickRemoteError.noTV }

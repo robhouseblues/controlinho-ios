@@ -3,7 +3,7 @@ import SwiftUI
 /// Finds a TV on the local network (or takes an IP address) and pairs with it.
 struct SetupView: View {
     @Environment(TVStore.self) private var store
-    @Environment(SamsungTVClient.self) private var client
+    @Environment(TVClient.self) private var client
     @Environment(\.dismiss) private var dismiss
 
     @State private var found: [DiscoveredTV] = []
@@ -19,7 +19,7 @@ struct SetupView: View {
                     if isScanning && found.isEmpty {
                         HStack(spacing: 12) {
                             ProgressView().tint(Palette.text)
-                            Text("Looking for Samsung TVs…").pixelFont(16).foregroundStyle(Palette.textSoft)
+                            Text("Looking for Samsung and LG TVs…").pixelFont(16).foregroundStyle(Palette.textSoft)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(12)
@@ -55,7 +55,7 @@ struct SetupView: View {
 
                 PixelSection(
                     title: "Enter IP address",
-                    footer: manualError ?? "Find it on the TV under Settings › General › Network › Network Status.",
+                    footer: manualError ?? "Find it in your TV's network settings, usually under Network Status or Connection Status.",
                     footerIsWarning: manualError != nil
                 ) {
                     TextField("192.168.0.42", text: $manualHost)
@@ -103,11 +103,11 @@ struct SetupView: View {
         isCheckingManual = true
         manualError = nil
         defer { isCheckingManual = false }
-        do {
-            pair(try await TVDiscovery.fetchInfo(host: host).savedTV)
-        } catch {
-            // Some firmwares hide the info endpoint; try the remote socket anyway.
-            pair(SavedTV(host: host, name: "Samsung TV"))
+        if let found = await TVDiscovery.identify(host: host) {
+            pair(found.savedTV)
+        } else {
+            // Some Samsung firmwares hide the info endpoint; try the remote socket anyway.
+            pair(SavedTV(brand: .samsung, host: host, name: DiscoveredTV.genericName(for: .samsung)))
         }
     }
 

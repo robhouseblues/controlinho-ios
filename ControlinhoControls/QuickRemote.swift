@@ -21,7 +21,12 @@ enum QuickRemote {
     /// Presses one key on the TV.
     static func press(_ key: TVKey) async throws {
         guard let tv = SharedStore.loadTV() else { throw QuickRemoteError.noTV }
-        try await RemoteConnection.shared.send(TVRemoteSocket.keyPayload(key), to: tv)
+        switch tv.kind {
+        case .samsung:
+            try await RemoteConnection.shared.send(TVRemoteSocket.keyPayload(key), to: tv)
+        case .lg:
+            try await LGQuickRemote.shared.press(key, on: tv)
+        }
     }
 
     /// Switches a TV in standby on over the local network.
@@ -152,5 +157,69 @@ actor RemoteConnection {
                 continue
             }
         }
+    }
+}
+
+/// LG counterpart of `RemoteConnection`: one shared connection, kept open for a short while
+/// after each press. It never shows a pairing prompt; that only happens in the app.
+actor LGQuickRemote {
+    static let shared = LGQuickRemote()
+
+    private static let idleTimeout: Duration = .seconds(20)
+
+    private var connection: LGConnection?
+    private var closeTimer: Task<Void, Never>?
+
+    func press(_ key: TVKey, on tv: SavedTV) async throws {
+        let mac = tv.wakeMAC
+        let host = tv.host
+        let wake: @Sendable () -> Void = { if let mac { WakeOnLAN.wake(mac: mac, host: host) } }
+
+        // A reused connection may have been dropped by the TV; retry once on a fresh one.
+        for attempt in 0..<2 {
+            let connection = connection(for: tv)
+            do {
+                try await connection.connect(allowPrompt: false)
+                await remember(connection, in: tv)
+                try await connection.press(key, wake: wake)
+                keepAlive()
+                return
+            } catch LGError.notPaired {
+                await close()
+                throw QuickRemoteError.notPaired
+            } catch {
+                await close()
+                if attempt == 1 { throw QuickRemoteError.unreachable }
+            }
+        }
+    }
+
+    private func connection(for tv: SavedTV) -> LGConnection {
+        if let connection, connection.host == tv.host { return connection }
+        let fresh = LGConnection(host: tv.host, clientKey: tv.token, preferLegacyPort: tv.usesLegacyPort ?? false)
+        connection = fresh
+        return fresh
+    }
+
+    /// Keeps the app in sync with the port that worked.
+    private func remember(_ connection: LGConnection, in tv: SavedTV) async {
+        let legacy = await connection.usedLegacyPort
+        guard tv.usesLegacyPort != legacy, var current = SharedStore.loadTV(), current.host == tv.host else { return }
+        current.usesLegacyPort = legacy
+        SharedStore.saveTV(current)
+    }
+
+    private func keepAlive() {
+        closeTimer?.cancel()
+        closeTimer = Task { [weak self] in
+            do { try await Task.sleep(for: Self.idleTimeout) } catch { return }
+            await self?.close()
+        }
+    }
+
+    private func close() async {
+        closeTimer?.cancel()
+        await connection?.close()
+        connection = nil
     }
 }

@@ -36,7 +36,7 @@ targets:
           - PixelifySans.ttf
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSLocalNetworkUsageDescription: Controlinho needs local network access to find and control your Samsung TV.
+        NSLocalNetworkUsageDescription: Controlinho needs local network access to find and control your TV.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
     settings:
@@ -58,6 +58,7 @@ targets:
       # Shared with the app: the saved TV, socket helpers and Wake-on-LAN.
       - Controlinho/Models/TVKey.swift
       - Controlinho/Services/SharedStore.swift
+      - Controlinho/Services/LGConnection.swift
       - Controlinho/Services/LocalNetwork.swift
     entitlements:
       path: ControlinhoControls/ControlinhoControls.entitlements
@@ -72,7 +73,7 @@ targets:
         CFBundleVersion: "1"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
-        NSLocalNetworkUsageDescription: Controlinho needs local network access to control your Samsung TV.
+        NSLocalNetworkUsageDescription: Controlinho needs local network access to control your TV.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
     settings:

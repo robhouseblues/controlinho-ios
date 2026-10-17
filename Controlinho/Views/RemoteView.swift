@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RemoteView: View {
     @Environment(TVStore.self) private var store
-    @Environment(SamsungTVClient.self) private var client
+    @Environment(TVClient.self) private var client
 
     @State private var showNumbers = false
     @State private var showSettings = false
@@ -116,7 +116,7 @@ struct RemoteView: View {
         HStack(spacing: 10) {
             Mascot(hops: client.commandCount)
             VStack(alignment: .leading, spacing: 2) {
-                Text(store.tv?.name ?? "Samsung TV")
+                Text(store.tv?.name ?? "TV")
                     .pixelFont(19, weight: .bold)
                     .foregroundStyle(Palette.textLight)
                     .lineLimit(1)
@@ -160,7 +160,7 @@ struct RemoteView: View {
             }
         case .failed(let reason):
             banner(art: .warning,
-                   text: reason ?? "The TV didn't turn on. Check that Power On with Mobile is enabled on the TV.",
+                   text: reason ?? "The TV didn't turn on. Check that \(wakeSettingName) is enabled on the TV.",
                    color: Palette.red) {
                 bannerButton("Settings") { showSettings = true }
             }
@@ -177,7 +177,7 @@ struct RemoteView: View {
     private var connectionBanner: some View {
         switch client.state {
         case .waitingForApproval:
-            banner(art: .warning, text: "Select Allow on your TV to pair Controlinho.", color: Palette.brass)
+            banner(art: .warning, text: "Accept the pairing request on your TV to connect Controlinho.", color: Palette.brass)
         case .failed(let message):
             // A TV in standby can't be reached; that's normal, so only the header mentions it.
             if !isProbablyOff {
@@ -307,6 +307,11 @@ struct RemoteView: View {
         Spacer(minLength: 6).frame(maxHeight: 22)
     }
 
+    /// The TV setting that lets it be switched on over the network.
+    private var wakeSettingName: String {
+        store.tv?.kind == .lg ? "Turn on via Wi-Fi" : "Power On with Mobile"
+    }
+
     /// Whether Power can switch the TV on from standby.
     private var canWake: Bool {
         store.tv?.wakeMAC != nil
@@ -406,5 +411,5 @@ private struct NumberPad: View {
 #Preview {
     RemoteView()
         .environment(TVStore())
-        .environment(SamsungTVClient())
+        .environment(TVClient())
 }

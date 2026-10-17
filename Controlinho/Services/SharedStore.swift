@@ -63,12 +63,18 @@ enum TVRemoteSocket {
     }
 }
 
-/// Reports socket opens and accepts the self-signed certificate Samsung TVs serve on port 8002.
+/// Reports socket opens and failures, and accepts the self-signed certificates TVs serve
+/// on their secure ports (Samsung 8002, LG 3001).
 final class TVSocketDelegate: NSObject, URLSessionWebSocketDelegate {
     var onOpen: ((URLSessionWebSocketTask) -> Void)?
+    var onFail: ((Error?) -> Void)?
 
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         onOpen?(webSocketTask)
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        onFail?(error)
     }
 
     func urlSession(

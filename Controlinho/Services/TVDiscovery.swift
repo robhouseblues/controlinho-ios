@@ -7,13 +7,24 @@ struct DiscoveredTV: Identifiable, Hashable {
     let model: String?
     let mac: String?
     let isWired: Bool
+    var brand: TVBrand = .samsung
+    var macMatchesConnection = false
 
     var savedTV: SavedTV {
-        SavedTV(host: host, name: name, model: model, mac: mac, isWired: isWired)
+        SavedTV(
+            brand: brand, host: host, name: name, model: model, mac: mac,
+            isWired: isWired, macMatchesConnection: macMatchesConnection
+        )
+    }
+
+    /// Placeholder name for a TV that hasn't told us its own yet.
+    static func genericName(for brand: TVBrand) -> String {
+        "\(brand.displayName) TV"
     }
 }
 
-/// Finds Samsung TVs by probing the `/api/v2/` info endpoint on every host of the local /24.
+/// Finds TVs by probing every host of the local /24: Samsung through its `/api/v2/` info
+/// endpoint, LG by whether its remote socket accepts a connection.
 enum TVDiscovery {
     private struct InfoResponse: Decodable {
         struct Device: Decodable {
@@ -35,14 +46,14 @@ enum TVDiscovery {
         return URLSession(configuration: config)
     }()
 
-    static func fetchInfo(host: String) async throws -> DiscoveredTV {
+    static func samsungInfo(host: String) async throws -> DiscoveredTV {
         let url = URL(string: "http://\(host):8001/api/v2/")!
         let (data, _) = try await session.data(from: url)
         let info = try JSONDecoder().decode(InfoResponse.self, from: data)
         if let type = info.device?.type, !type.localizedCaseInsensitiveContains("samsung") {
             throw URLError(.badServerResponse)
         }
-        let name = (info.device?.name ?? info.name ?? "Samsung TV")
+        let name = (info.device?.name ?? info.name ?? DiscoveredTV.genericName(for: .samsung))
             .replacingOccurrences(of: "&quot;", with: "\"")
         return DiscoveredTV(
             host: host,
@@ -53,6 +64,16 @@ enum TVDiscovery {
         )
     }
 
+    /// Works out which kind of TV, if any, is at `host`.
+    static func identify(host: String) async -> DiscoveredTV? {
+        async let samsung = try? samsungInfo(host: host)
+        async let isLG = LGConnection.probe(host: host)
+        if let samsung = await samsung { return samsung }
+        guard await isLG else { return nil }
+        // LG only shares its name and model after pairing.
+        return DiscoveredTV(host: host, name: DiscoveredTV.genericName(for: .lg), model: nil, mac: nil, isWired: false, brand: .lg)
+    }
+
     static func scan() async -> [DiscoveredTV] {
         guard let ip = LocalNetwork.currentIPv4() else { return [] }
         let prefix = ip.split(separator: ".").prefix(3).joined(separator: ".")
@@ -60,7 +81,7 @@ enum TVDiscovery {
             for last in 1...254 {
                 let host = "\(prefix).\(last)"
                 guard host != ip else { continue }
-                group.addTask { try? await fetchInfo(host: host) }
+                group.addTask { await identify(host: host) }
             }
             var found: [DiscoveredTV] = []
             for await tv in group {

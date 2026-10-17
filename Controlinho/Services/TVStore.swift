@@ -23,8 +23,9 @@ final class TVStore {
         guard var tv, tv.host == info.host else { return }
         tv.mac = info.mac ?? tv.mac
         tv.isWired = info.isWired
+        tv.macMatchesConnection = info.mac != nil ? info.macMatchesConnection : tv.macMatchesConnection
         tv.model = info.model ?? tv.model
-        if tv.name == "Samsung TV" { tv.name = info.name }
+        if tv.name == DiscoveredTV.genericName(for: tv.kind) { tv.name = info.name }
         if tv != self.tv { self.tv = tv }
     }
 

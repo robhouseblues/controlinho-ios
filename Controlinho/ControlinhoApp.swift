@@ -3,7 +3,7 @@ import SwiftUI
 @main
 struct ControlinhoApp: App {
     @State private var store = TVStore()
-    @State private var client = SamsungTVClient()
+    @State private var client = TVClient()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -18,12 +18,9 @@ struct ControlinhoApp: App {
                     client.onPortConfirmed = { [store] legacy in
                         if store.tv?.usesLegacyPort != legacy { store.tv?.usesLegacyPort = legacy }
                     }
-                    client.onConnected = { [store] in
-                        guard let host = store.tv?.host else { return }
+                    client.onConnected = { [store, client] in
                         Task {
-                            if let info = try? await TVDiscovery.fetchInfo(host: host) {
-                                store.update(from: info)
-                            }
+                            if let info = await client.fetchInfo() { store.update(from: info) }
                         }
                     }
                     if let tv = store.tv { client.connect(to: tv) }

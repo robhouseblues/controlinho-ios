@@ -1,5 +1,4 @@
 import Foundation
-import Observation
 
 /// Talks to a Samsung Tizen TV (2016+) over its remote-control WebSocket.
 ///
@@ -7,37 +6,26 @@ import Observation
 /// token after the user accepts the pairing prompt on screen. Older models only expose
 /// plain `ws://<ip>:8001`, so we fall back to that when the secure port refuses us.
 @MainActor
-@Observable
-final class SamsungTVClient {
-    enum State: Equatable {
-        case disconnected
-        case connecting
-        case waitingForApproval
-        case connected
-        case failed(String)
-    }
-
-    private(set) var state: State = .disconnected
-
-    /// Goes up by one for every key press or app launch, so the UI can react to it.
-    private(set) var commandCount = 0
-
-    /// Called whenever the TV issues a new pairing token, so it can be persisted.
+final class SamsungDriver: TVDriver {
+    var onStateChange: ((TVConnectionState) -> Void)?
     var onTokenUpdate: ((String) -> Void)?
-
-    /// Called each time the TV accepts the connection.
-    var onConnected: (() -> Void)?
-
-    /// Called with whether the TV only accepted the legacy port.
     var onPortConfirmed: ((Bool) -> Void)?
 
-    private var tv: SavedTV?
+    private var state: TVConnectionState = .disconnected {
+        didSet { if state != oldValue { onStateChange?(state) } }
+    }
+
+    private var tv: SavedTV
     private var task: URLSessionWebSocketTask?
-    private var useLegacyPort = false
+    private var useLegacyPort: Bool
     private var pending: [String] = []
     private var approvalTimer: Task<Void, Never>?
 
-    @ObservationIgnored
+    init(tv: SavedTV) {
+        self.tv = tv
+        useLegacyPort = tv.usesLegacyPort ?? false
+    }
+
     private lazy var session: URLSession = {
         let delegate = TVSocketDelegate()
         delegate.onOpen = { [weak self] task in
@@ -48,15 +36,11 @@ final class SamsungTVClient {
 
     // MARK: Connection
 
-    func connect(to tv: SavedTV) {
-        disconnect()
-        self.tv = tv
-        useLegacyPort = tv.usesLegacyPort ?? false
+    func connect() {
         open()
     }
 
     func reconnectIfNeeded() {
-        guard tv != nil else { return }
         switch state {
         case .disconnected, .failed: open()
         default: break
@@ -72,7 +56,6 @@ final class SamsungTVClient {
     }
 
     private func open() {
-        guard let tv else { return }
         guard let url = TVRemoteSocket.url(for: tv, legacy: useLegacyPort) else {
             state = .failed("Invalid TV address.")
             return
@@ -157,11 +140,10 @@ final class SamsungTVClient {
             state = .connected
             onPortConfirmed?(useLegacyPort)
             if let token = (json["data"] as? [String: Any])?["token"] as? String {
-                tv?.token = token
+                tv.token = token
                 onTokenUpdate?(token)
             }
             flushPending()
-            onConnected?()
         case "ms.channel.unauthorized":
             approvalTimer?.cancel()
             state = .failed("The TV denied the connection. Allow Controlinho under Settings › General › External Device Manager.")
@@ -176,24 +158,17 @@ final class SamsungTVClient {
     // MARK: Commands
 
     func send(_ key: TVKey) {
-        commandCount += 1
         enqueueText(TVRemoteSocket.keyPayload(key))
-    }
-
-    enum LaunchResult {
-        case launched
-        case notInstalled
     }
 
     /// Opens an app on the TV.
     ///
     /// Tries the TV's REST endpoint first, which reports whether the app exists, then falls
     /// back to the WebSocket launch command for firmware that blocks REST launches.
-    func launch(_ app: TVApp) async -> LaunchResult {
-        commandCount += 1
-        guard let host = tv?.host else { return .launched }
+    func launch(_ app: TVApp) async -> TVLaunchResult {
+        let host = tv.host
         var restWorks = false
-        for id in app.ids {
+        for id in app.samsungIDs {
             let status = await restLaunch(host: host, appID: id)
             if (200..<300).contains(status) { return .launched }
             if status == 404 { restWorks = true }
@@ -201,7 +176,7 @@ final class SamsungTVClient {
         // Every ID came back "not found" from a working endpoint: the app isn't installed.
         if restWorks { return .notInstalled }
 
-        for id in app.ids {
+        for id in app.samsungIDs {
             enqueue([
                 "method": "ms.channel.emit",
                 "params": [
@@ -239,6 +214,10 @@ final class SamsungTVClient {
             pending = Array((pending + [text]).suffix(5))
             reconnectIfNeeded()
         }
+    }
+
+    func fetchInfo() async -> DiscoveredTV? {
+        try? await TVDiscovery.samsungInfo(host: tv.host)
     }
 
     private func flushPending() {

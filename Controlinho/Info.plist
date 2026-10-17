@@ -26,7 +26,7 @@
 		<true/>
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Controlinho needs local network access to find and control your Samsung TV.</string>
+	<string>Controlinho needs local network access to find and control your TV.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>PixelifySans.ttf</string>

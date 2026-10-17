@@ -31,6 +31,6 @@
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Controlinho needs local network access to control your Samsung TV.</string>
+	<string>Controlinho needs local network access to control your TV.</string>
 </dict>
 </plist>

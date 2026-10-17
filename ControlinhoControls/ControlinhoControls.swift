@@ -24,7 +24,7 @@ struct PowerControl: ControlWidget {
             }
         }
         .displayName("TV Power")
-        .description("Turns your Samsung TV on or off.")
+        .description("Turns your TV on or off.")
     }
 }
 
@@ -36,7 +36,7 @@ struct VolumeUpControl: ControlWidget {
             }
         }
         .displayName("TV Volume Up")
-        .description("Turns your Samsung TV's volume up.")
+        .description("Turns your TV's volume up.")
     }
 }
 
@@ -48,7 +48,7 @@ struct VolumeDownControl: ControlWidget {
             }
         }
         .displayName("TV Volume Down")
-        .description("Turns your Samsung TV's volume down.")
+        .description("Turns your TV's volume down.")
     }
 }
 
@@ -60,7 +60,7 @@ struct MuteControl: ControlWidget {
             }
         }
         .displayName("TV Mute")
-        .description("Mutes or unmutes your Samsung TV.")
+        .description("Mutes or unmutes your TV.")
     }
 }
 
@@ -72,7 +72,7 @@ struct PauseControl: ControlWidget {
             }
         }
         .displayName("TV Pause")
-        .description("Pauses what's playing on your Samsung TV.")
+        .description("Pauses what's playing on your TV.")
     }
 }
 
@@ -84,6 +84,6 @@ struct OKControl: ControlWidget {
             }
         }
         .displayName("TV OK")
-        .description("Presses OK on your Samsung TV's remote.")
+        .description("Presses OK on your TV's remote.")
     }
 }

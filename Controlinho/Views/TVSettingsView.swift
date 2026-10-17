@@ -3,7 +3,7 @@ import SwiftUI
 /// Details about the paired TV, plus the MAC address used to switch it on.
 struct TVSettingsView: View {
     @Environment(TVStore.self) private var store
-    @Environment(SamsungTVClient.self) private var client
+    @Environment(TVClient.self) private var client
     @Environment(\.dismiss) private var dismiss
 
     @State private var manualMAC = ""
@@ -83,10 +83,10 @@ struct TVSettingsView: View {
         if !manualMAC.isEmpty && !SavedTV.isValidMAC(manualMAC) {
             return "That doesn't look like a MAC address. It should be six pairs of characters like 64:1C:AE:12:34:56."
         }
-        let setting = "Also turn on Power On with Mobile on the TV (Settings › General › Network › Expert Settings, or Settings › Connection › Network › Expert Settings on newer models)."
+        let setting = "Also turn on \(tv.kind.wakeSettingHint)."
         if tv.wakeMAC == nil {
             if tv.isWired == true {
-                return "Your TV is on a network cable, so it needs its Ethernet MAC address. Find it on the TV under Settings › Support › About This TV and type it above. " + setting
+                return "Your TV is on a network cable, so it needs its Ethernet MAC address. Find it in the TV's network or support settings and type it above. " + setting
             }
             return "The app reads the MAC address automatically the next time it connects while the TV is on. You can also type it above. " + setting
         }
