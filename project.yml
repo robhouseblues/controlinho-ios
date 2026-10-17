@@ -55,12 +55,10 @@ targets:
       Release: Config/Signing.xcconfig
     sources:
       - ControlinhoControls
-      # Shared with the app: the saved TV, socket helpers, Wake-on-LAN and SmartThings.
+      # Shared with the app: the saved TV, socket helpers and Wake-on-LAN.
       - Controlinho/Models/TVKey.swift
       - Controlinho/Services/SharedStore.swift
       - Controlinho/Services/LocalNetwork.swift
-      - Controlinho/Services/Keychain.swift
-      - Controlinho/Services/SmartThings.swift
     entitlements:
       path: ControlinhoControls/ControlinhoControls.entitlements
       properties:

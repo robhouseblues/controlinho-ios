@@ -64,9 +64,6 @@ struct SavedTV: Codable, Equatable {
     var token: String?
     /// True for pre-2018 TVs that only accept the plain `ws://…:8001` socket.
     var usesLegacyPort: Bool?
-    /// The TV's device in SmartThings, used to switch it on through the cloud.
-    var smartThingsDeviceID: String?
-    var smartThingsDeviceName: String?
 
     /// The MAC address to send Wake-on-LAN packets to.
     var wakeMAC: String? {

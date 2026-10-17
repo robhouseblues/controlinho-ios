@@ -51,8 +51,6 @@ struct TVSettingsView: View {
                         .disabled(tv.wakeMAC == nil)
                     }
 
-                    SmartThingsSection()
-
                     PixelSection {
                         PixelActionRow(title: "Forget TV", color: Palette.red) {
                             client.disconnect()

@@ -116,8 +116,6 @@ struct SetupView: View {
         if let current = store.tv, current.host == tv.host {
             tv.token = current.token
             tv.manualMAC = current.manualMAC
-            tv.smartThingsDeviceID = current.smartThingsDeviceID
-            tv.smartThingsDeviceName = current.smartThingsDeviceName
         }
         store.tv = tv
         client.connect(to: tv)

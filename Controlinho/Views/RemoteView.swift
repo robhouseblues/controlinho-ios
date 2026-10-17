@@ -3,15 +3,12 @@ import SwiftUI
 struct RemoteView: View {
     @Environment(TVStore.self) private var store
     @Environment(SamsungTVClient.self) private var client
-    @Environment(SmartThings.self) private var smartThings
 
     @State private var showNumbers = false
     @State private var showSettings = false
     @State private var wake: WakeStatus?
     @State private var launchingApp: String?
     @State private var appMessage: String?
-    /// What SmartThings last said about the TV's power, while the app can't reach it.
-    @State private var smartThingsSaysOn: Bool?
 
     private enum WakeStatus: Equatable {
         case waking
@@ -106,12 +103,7 @@ struct RemoteView: View {
             TVSettingsView()
         }
         .onChange(of: client.state) { _, state in
-            if state == .connected {
-                wake = nil
-                smartThingsSaysOn = nil
-            } else if case .failed = state {
-                checkPowerState()
-            }
+            if state == .connected { wake = nil }
         }
         .onChange(of: store.tv?.wakeMAC) { _, mac in
             if mac != nil, wake == .notSetUp { wake = nil }
@@ -174,7 +166,7 @@ struct RemoteView: View {
             }
         case .notSetUp:
             banner(art: .warning,
-                   text: "To turn the TV on from your phone, add its MAC address or connect SmartThings.",
+                   text: "To turn the TV on from your phone, the app needs its MAC address.",
                    color: Palette.red) {
                 bannerButton("Add") { showSettings = true }
             }
@@ -189,13 +181,7 @@ struct RemoteView: View {
         case .failed(let message):
             // A TV in standby can't be reached; that's normal, so only the header mentions it.
             if !isProbablyOff {
-                banner(
-                    art: .warning,
-                    text: smartThingsSaysOn == true
-                        ? "The TV is on but the app can't reach it. Make sure your phone is on the same Wi-Fi."
-                        : message,
-                    color: Palette.red
-                ) {
+                banner(art: .warning, text: message, color: Palette.red) {
                     bannerButton("Retry") { client.reconnectIfNeeded() }
                 }
             }
@@ -294,9 +280,7 @@ struct RemoteView: View {
             client.send(.power)
             return
         }
-        let mac = tv.wakeMAC
-        let smartThingsID = smartThings.isSignedIn ? tv.smartThingsDeviceID : nil
-        guard mac != nil || smartThingsID != nil else {
+        guard let mac = tv.wakeMAC else {
             // With no way to wake it, the best we can do is hope the TV is only in network standby.
             client.send(.power)
             wake = .notSetUp
@@ -304,51 +288,34 @@ struct RemoteView: View {
         }
         guard wake != .waking else { return }
 
-        // The socket is down when the TV is off, so wake it (over the LAN and/or the cloud)
-        // and poll until it answers.
+        // The socket is down when the TV is off, so wake it over the network and poll
+        // until it answers.
         wake = .waking
         Task {
-            var smartThingsError: String?
-            if let smartThingsID {
-                do {
-                    try await smartThings.turnOn(deviceID: smartThingsID)
-                } catch {
-                    smartThingsError = error.localizedDescription
-                }
-            }
             for _ in 0..<6 {
-                if let mac { WakeOnLAN.wake(mac: mac, host: tv.host) }
+                WakeOnLAN.wake(mac: mac, host: tv.host)
                 try? await Task.sleep(for: .seconds(3))
                 if client.state == .connected { return }
                 client.reconnectIfNeeded()
             }
-            if client.state != .connected, wake == .waking { wake = .failed(smartThingsError) }
+            if client.state != .connected, wake == .waking { wake = .failed(nil) }
         }
     }
 
-    /// Whether Power can switch the TV on from standby.
     /// Space between rows: grows to fill the screen, shrinks to make room for a banner.
     private var gap: some View {
         Spacer(minLength: 6).frame(maxHeight: 22)
     }
 
+    /// Whether Power can switch the TV on from standby.
     private var canWake: Bool {
-        store.tv?.wakeMAC != nil || (smartThings.isSignedIn && store.tv?.smartThingsDeviceID != nil)
+        store.tv?.wakeMAC != nil
     }
 
-    /// Asks SmartThings whether the TV is just switched off.
-    private func checkPowerState() {
-        guard smartThings.isSignedIn, let deviceID = store.tv?.smartThingsDeviceID else { return }
-        Task {
-            guard let isOn = try? await smartThings.isOn(deviceID: deviceID) else { return }
-            if client.state != .connected { smartThingsSaysOn = isOn }
-        }
-    }
-
-    /// Unreachable, but Power can wake it and nothing says it's on: most likely in standby.
+    /// Unreachable, but Power can wake it: most likely in standby.
     private var isProbablyOff: Bool {
         guard case .failed = client.state else { return false }
-        return canWake && smartThingsSaysOn != true
+        return canWake
     }
 
     private var statusColor: Color {
@@ -362,7 +329,7 @@ struct RemoteView: View {
     }
 
     private var statusText: String {
-        if isProbablyOff { return smartThingsSaysOn == false ? "Off · tap power" : "Asleep · tap power" }
+        if isProbablyOff { return "Asleep · tap power" }
         return switch client.state {
         case .connected: "Connected"
         case .connecting: "Connecting…"
@@ -440,5 +407,4 @@ private struct NumberPad: View {
     RemoteView()
         .environment(TVStore())
         .environment(SamsungTVClient())
-        .environment(SmartThings())
 }

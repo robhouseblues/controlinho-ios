@@ -4,7 +4,6 @@ import SwiftUI
 struct ControlinhoApp: App {
     @State private var store = TVStore()
     @State private var client = SamsungTVClient()
-    @State private var smartThings = SmartThings()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -12,7 +11,6 @@ struct ControlinhoApp: App {
             RootView()
                 .environment(store)
                 .environment(client)
-                .environment(smartThings)
                 .preferredColorScheme(.dark)
                 .tint(Palette.brass)
                 .onAppear {
@@ -34,7 +32,6 @@ struct ControlinhoApp: App {
                     switch phase {
                     case .active:
                         client.reconnectIfNeeded()
-                        Task { await smartThings.refreshIfNeeded() }
                     case .background: client.disconnect()
                     default: break
                     }

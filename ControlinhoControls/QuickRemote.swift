@@ -11,7 +11,7 @@ enum QuickRemoteError: LocalizedError {
         case .noTV: "Open Controlinho and connect your TV first."
         case .notPaired: "Open Controlinho to pair with your TV first."
         case .unreachable: "Couldn't reach the TV."
-        case .cantWake: "Add the TV's MAC address or SmartThings in Controlinho to turn it on."
+        case .cantWake: "Add the TV's MAC address in Controlinho to turn it on."
         }
     }
 }
@@ -24,21 +24,10 @@ enum QuickRemote {
         try await RemoteConnection.shared.send(TVRemoteSocket.keyPayload(key), to: tv)
     }
 
-    /// Switches a TV in standby on, over the local network and/or SmartThings.
+    /// Switches a TV in standby on over the local network.
     static func wake(_ tv: SavedTV) async throws {
-        var didSomething = false
-        if let mac = tv.wakeMAC {
-            WakeOnLAN.wake(mac: mac, host: tv.host)
-            didSomething = true
-        }
-        if let deviceID = tv.smartThingsDeviceID {
-            let smartThings = await SmartThings()
-            if await smartThings.isSignedIn {
-                try await smartThings.turnOn(deviceID: deviceID)
-                didSomething = true
-            }
-        }
-        guard didSomething else { throw QuickRemoteError.cantWake }
+        guard let mac = tv.wakeMAC else { throw QuickRemoteError.cantWake }
+        WakeOnLAN.wake(mac: mac, host: tv.host)
         // Wake-on-LAN packets are sent asynchronously; let them go out.
         try? await Task.sleep(for: .milliseconds(300))
     }
