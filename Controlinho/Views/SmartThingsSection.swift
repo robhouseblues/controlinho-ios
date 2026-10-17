@@ -157,22 +157,18 @@ struct SmartThingsCredentialsView: View {
                 }
             }
         }
-        .pixelNavigationBar("SmartThings App")
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    smartThings.save(SmartThings.Credentials(
-                        clientID: clientID.trimmingCharacters(in: .whitespaces),
-                        clientSecret: clientSecret.trimmingCharacters(in: .whitespaces),
-                        redirectURL: redirectURL.trimmingCharacters(in: .whitespaces)
-                    ))
-                    dismiss()
-                } label: {
-                    Text("Save").font(.pixel(17, weight: .bold))
-                }
-                .disabled(!isValid)
+        .pixelScreen(
+            "SmartThings App",
+            leading: PixelBarAction(title: "Back") { dismiss() },
+            trailing: PixelBarAction(title: "Save", primary: true, enabled: isValid) {
+                smartThings.save(SmartThings.Credentials(
+                    clientID: clientID.trimmingCharacters(in: .whitespaces),
+                    clientSecret: clientSecret.trimmingCharacters(in: .whitespaces),
+                    redirectURL: redirectURL.trimmingCharacters(in: .whitespaces)
+                ))
+                dismiss()
             }
-        }
+        )
         .onAppear {
             if let credentials = smartThings.credentials {
                 clientID = credentials.clientID

@@ -19,6 +19,9 @@ final class SamsungTVClient {
 
     private(set) var state: State = .disconnected
 
+    /// Goes up by one for every key press or app launch, so the UI can react to it.
+    private(set) var commandCount = 0
+
     /// Called whenever the TV issues a new pairing token, so it can be persisted.
     var onTokenUpdate: ((String) -> Void)?
 
@@ -181,6 +184,7 @@ final class SamsungTVClient {
     // MARK: Commands
 
     func send(_ key: TVKey) {
+        commandCount += 1
         enqueue([
             "method": "ms.remote.control",
             "params": [
@@ -202,6 +206,7 @@ final class SamsungTVClient {
     /// Tries the TV's REST endpoint first, which reports whether the app exists, then falls
     /// back to the WebSocket launch command for firmware that blocks REST launches.
     func launch(_ app: TVApp) async -> LaunchResult {
+        commandCount += 1
         guard let host = tv?.host else { return .launched }
         var restWorks = false
         for id in app.ids {

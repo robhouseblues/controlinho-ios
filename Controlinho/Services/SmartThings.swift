@@ -129,6 +129,17 @@ final class SmartThings {
         return (tvs.isEmpty ? devices : tvs).sorted { $0.displayName < $1.displayName }
     }
 
+    /// Whether the device is switched on, as last reported to SmartThings. A TV in standby
+    /// stays connected to SmartThings and reports "off".
+    func isOn(deviceID: String) async throws -> Bool {
+        struct Status: Decodable {
+            struct Value: Decodable { let value: String? }
+            let `switch`: Value
+        }
+        let data = try await call("v1/devices/\(deviceID)/components/main/capabilities/switch/status")
+        return try JSONDecoder().decode(Status.self, from: data).switch.value == "on"
+    }
+
     func turnOn(deviceID: String) async throws {
         let body: [String: Any] = [
             "commands": [["component": "main", "capability": "switch", "command": "on"]],

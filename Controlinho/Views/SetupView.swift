@@ -73,15 +73,7 @@ struct SetupView: View {
                     }
                 }
             }
-            .pixelNavigationBar("Connect a TV")
-            .toolbar {
-                if store.tv != nil {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { dismiss() }
-                            .font(.pixel(17))
-                    }
-                }
-            }
+            .pixelScreen("Connect a TV", leading: store.tv == nil ? nil : PixelBarAction(title: "Cancel") { dismiss() })
             .task { await scan() }
         }
     }

@@ -62,15 +62,9 @@ struct TVSettingsView: View {
                     }
                 }
             }
-            .pixelNavigationBar("TV Settings")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                        .font(.pixel(17, weight: .bold))
-                }
-            }
+            .pixelScreen("TV Settings", trailing: PixelBarAction(title: "Done", primary: true) { dismiss() })
             .onAppear { manualMAC = store.tv?.manualMAC ?? "" }
-            .sheet(isPresented: $showSetup) { SetupView() }
+            .fullScreenCover(isPresented: $showSetup) { SetupView() }
         }
     }
 

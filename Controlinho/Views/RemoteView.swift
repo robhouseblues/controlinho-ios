@@ -10,6 +10,8 @@ struct RemoteView: View {
     @State private var wake: WakeStatus?
     @State private var launchingApp: String?
     @State private var appMessage: String?
+    /// What SmartThings last said about the TV's power, while the app can't reach it.
+    @State private var smartThingsSaysOn: Bool?
 
     private enum WakeStatus: Equatable {
         case waking
@@ -18,10 +20,13 @@ struct RemoteView: View {
     }
 
     var body: some View {
+        GeometryReader { geo in
         ScrollView {
-            VStack(spacing: 13) {
+            VStack(spacing: 0) {
                 header
                 statusBanner
+                    .padding(.top, 10)
+                gap
 
                 HStack {
                     KeyButton(art: .power, label: "Power", tone: .oxblood, action: power)
@@ -32,8 +37,10 @@ struct RemoteView: View {
                     Spacer()
                     KeyButton(art: .info, label: "Info") { client.send(.info) }
                 }
+                gap
 
                 DPad { client.send($0) }
+                gap
 
                 HStack {
                     KeyButton(art: .back, label: "Back") { client.send(.back) }
@@ -43,6 +50,7 @@ struct RemoteView: View {
                     KeyButton(art: .menu, label: "Menu") { client.send(.menu) }
                 }
                 .padding(.horizontal, 30)
+                gap
 
                 HStack(alignment: .center) {
                     Rocker(title: "VOL", up: .plus, down: .minus,
@@ -57,6 +65,7 @@ struct RemoteView: View {
                            onUp: { client.send(.channelUp) }, onDown: { client.send(.channelDown) })
                 }
                 .padding(.horizontal, 12)
+                gap
 
                 HStack {
                     KeyButton(art: PixelArt.fastForward.mirrored, label: "Rewind", size: 52) { client.send(.rewind) }
@@ -67,25 +76,42 @@ struct RemoteView: View {
                     Spacer()
                     KeyButton(art: .fastForward, label: "Fast forward", size: 52) { client.send(.fastForward) }
                 }
+                gap
 
                 apps
+                Spacer(minLength: 0)
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, 24)
+            .padding(.bottom, 12)
+            // Fill the screen so the gaps can stretch; they shrink back when a banner shows.
+            .frame(minHeight: geo.size.height)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(IronFloor())
-        .sheet(isPresented: $showNumbers) {
-            NumberPad { client.send($0) }
-                .presentationDetents([.height(400)])
-                .presentationDragIndicator(.visible)
-                .presentationBackground(Palette.bar)
         }
-        .sheet(isPresented: $showSettings) {
+        .background(IronFloor())
+        .overlay {
+            if showNumbers {
+                ZStack(alignment: .bottom) {
+                    Color.black.opacity(0.55)
+                        .ignoresSafeArea()
+                        .onTapGesture { showNumbers = false }
+                        .transition(.opacity)
+                    NumberPad(onKey: { client.send($0) }, onClose: { showNumbers = false })
+                        .transition(.move(edge: .bottom))
+                }
+            }
+        }
+        .animation(.easeOut(duration: 0.18), value: showNumbers)
+        .fullScreenCover(isPresented: $showSettings) {
             TVSettingsView()
         }
         .onChange(of: client.state) { _, state in
-            if state == .connected { wake = nil }
+            if state == .connected {
+                wake = nil
+                smartThingsSaysOn = nil
+            } else if case .failed = state {
+                checkPowerState()
+            }
         }
         .onChange(of: store.tv?.wakeMAC) { _, mac in
             if mac != nil, wake == .notSetUp { wake = nil }
@@ -95,17 +121,20 @@ struct RemoteView: View {
     // MARK: Sections
 
     private var header: some View {
-        HStack(spacing: 12) {
-            PixelIcon(.gem)
-                .foregroundStyle(statusColor)
-            VStack(alignment: .leading, spacing: 0) {
+        HStack(spacing: 10) {
+            Mascot(hops: client.commandCount)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(store.tv?.name ?? "Samsung TV")
-                    .font(.pixel(19, weight: .bold))
+                    .pixelFont(19, weight: .bold)
                     .foregroundStyle(Palette.textLight)
                     .lineLimit(1)
-                Text(statusText)
-                    .font(.pixel(14))
-                    .foregroundStyle(Palette.textSoft)
+                HStack(spacing: 6) {
+                    PixelIcon(.gem, scale: 2)
+                        .foregroundStyle(statusColor)
+                    Text(statusText)
+                        .pixelFont(14)
+                        .foregroundStyle(Palette.textSoft)
+                }
             }
             Spacer()
             // A plain button rather than a Menu: menus close whenever the connection state
@@ -158,8 +187,17 @@ struct RemoteView: View {
         case .waitingForApproval:
             banner(art: .warning, text: "Select Allow on your TV to pair Controlinho.", color: Palette.brass)
         case .failed(let message):
-            banner(art: .warning, text: message, color: Palette.red) {
-                bannerButton("Retry") { client.reconnectIfNeeded() }
+            // A TV in standby can't be reached; that's normal, so only the header mentions it.
+            if !isProbablyOff {
+                banner(
+                    art: .warning,
+                    text: smartThingsSaysOn == true
+                        ? "The TV is on but the app can't reach it. Make sure your phone is on the same Wi-Fi."
+                        : message,
+                    color: Palette.red
+                ) {
+                    bannerButton("Retry") { client.reconnectIfNeeded() }
+                }
             }
         default:
             EmptyView()
@@ -288,8 +326,34 @@ struct RemoteView: View {
         }
     }
 
+    /// Whether Power can switch the TV on from standby.
+    /// Space between rows: grows to fill the screen, shrinks to make room for a banner.
+    private var gap: some View {
+        Spacer(minLength: 6).frame(maxHeight: 22)
+    }
+
+    private var canWake: Bool {
+        store.tv?.wakeMAC != nil || (smartThings.isSignedIn && store.tv?.smartThingsDeviceID != nil)
+    }
+
+    /// Asks SmartThings whether the TV is just switched off.
+    private func checkPowerState() {
+        guard smartThings.isSignedIn, let deviceID = store.tv?.smartThingsDeviceID else { return }
+        Task {
+            guard let isOn = try? await smartThings.isOn(deviceID: deviceID) else { return }
+            if client.state != .connected { smartThingsSaysOn = isOn }
+        }
+    }
+
+    /// Unreachable, but Power can wake it and nothing says it's on: most likely in standby.
+    private var isProbablyOff: Bool {
+        guard case .failed = client.state else { return false }
+        return canWake && smartThingsSaysOn != true
+    }
+
     private var statusColor: Color {
-        switch client.state {
+        if isProbablyOff { return Palette.textSoft }
+        return switch client.state {
         case .connected: Palette.green
         case .connecting, .waitingForApproval: Palette.yellow
         case .disconnected: Palette.textSoft
@@ -298,7 +362,8 @@ struct RemoteView: View {
     }
 
     private var statusText: String {
-        switch client.state {
+        if isProbablyOff { return smartThingsSaysOn == false ? "Off · tap power" : "Asleep · tap power" }
+        return switch client.state {
         case .connected: "Connected"
         case .connecting: "Connecting…"
         case .waitingForApproval: "Waiting for approval"
@@ -308,19 +373,56 @@ struct RemoteView: View {
     }
 }
 
+/// The chick from the app icon, sitting on the title plate. It hops on every key press.
+private struct Mascot: View {
+    let hops: Int
+
+    var body: some View {
+        Image("Chick")
+            .resizable()
+            .interpolation(.medium)
+            .scaledToFit()
+            .frame(width: 44, height: 36)
+            .keyframeAnimator(initialValue: CGFloat(0), trigger: hops) { content, lift in
+                content.offset(y: -lift)
+            } keyframes: { _ in
+                CubicKeyframe(7, duration: 0.09)
+                CubicKeyframe(0, duration: 0.14)
+            }
+            .accessibilityHidden(true)
+    }
+}
+
+/// Digit keys in a copper panel that slides up over the remote.
 private struct NumberPad: View {
     let onKey: (TVKey) -> Void
+    let onClose: () -> Void
 
     var body: some View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
-        LazyVGrid(columns: columns, spacing: 14) {
-            ForEach(1...9, id: \.self) { digit($0) }
-            Color.clear.frame(height: 1)
-            digit(0)
+        VStack(spacing: 14) {
+            HStack {
+                Text("Channel number")
+                    .pixelFont(17, weight: .bold)
+                    .foregroundStyle(Palette.textLight)
+                Spacer()
+                Button(action: onClose) {
+                    Text("Close")
+                        .pixelFont(15, weight: .bold)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                }
+                .buttonStyle(PixelButtonStyle(tone: .iron, depth: Pixel.unit))
+            }
+            LazyVGrid(columns: columns, spacing: 14) {
+                ForEach(1...9, id: \.self) { digit($0) }
+                Color.clear.frame(height: 1)
+                digit(0)
+            }
         }
         .pixelPanel(.copper, padding: Pixel.unit * 5)
-        .padding(.horizontal, 20)
-        .padding(.top, 24)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
     }
 
     private func digit(_ n: Int) -> some View {

@@ -171,20 +171,62 @@ struct PixelFieldStyle: TextFieldStyle {
     }
 }
 
+/// A button in a pixel title bar.
+struct PixelBarAction {
+    let title: String
+    var primary = false
+    var enabled = true
+    let action: () -> Void
+}
+
+/// The title bar used instead of the system navigation bar, whose glass buttons and
+/// fonts don't fit the pixel style.
+struct PixelTopBar: View {
+    let title: String
+    var leading: PixelBarAction?
+    var trailing: PixelBarAction?
+
+    var body: some View {
+        ZStack {
+            Text(title)
+                .pixelFont(19, weight: .bold)
+                .foregroundStyle(Palette.textLight)
+                .lineLimit(1)
+                .padding(.horizontal, 90)
+            HStack {
+                if let leading { button(leading) }
+                Spacer()
+                if let trailing { button(trailing) }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .frame(minHeight: 54)
+        .background(Palette.bar.ignoresSafeArea(edges: .top))
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Palette.ink).frame(height: Pixel.unit)
+        }
+    }
+
+    private func button(_ item: PixelBarAction) -> some View {
+        Button(action: item.action) {
+            Text(item.title)
+                .pixelFont(16, weight: .bold)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+        }
+        .buttonStyle(PixelButtonStyle(tone: item.primary ? .brass : .iron, depth: Pixel.unit))
+        .disabled(!item.enabled)
+        .opacity(item.enabled ? 1 : 0.5)
+    }
+}
+
 extension View {
-    /// Dark-wood title bar with the title in the pixel font.
-    func pixelNavigationBar(_ title: String) -> some View {
-        navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Palette.bar, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(title)
-                        .pixelFont(19, weight: .bold)
-                        .foregroundStyle(Palette.textLight)
-                }
+    /// Replaces the system navigation bar with a pixel title bar.
+    func pixelScreen(_ title: String, leading: PixelBarAction? = nil, trailing: PixelBarAction? = nil) -> some View {
+        toolbar(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .top, spacing: 0) {
+                PixelTopBar(title: title, leading: leading, trailing: trailing)
             }
     }
 }
