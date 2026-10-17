@@ -1,20 +1,17 @@
 import Foundation
 import Observation
 
-/// Persists the paired TV (including its auth token) in UserDefaults.
+/// Persists the paired TV (including its auth token) in the App Group, where the
+/// Control Center controls can read it too.
 @MainActor
 @Observable
 final class TVStore {
-    private static let key = "savedTV"
-
     var tv: SavedTV? {
         didSet { persist() }
     }
 
     init() {
-        if let data = UserDefaults.standard.data(forKey: Self.key) {
-            tv = try? JSONDecoder().decode(SavedTV.self, from: data)
-        }
+        tv = SharedStore.loadTV()
     }
 
     func updateToken(_ token: String) {
@@ -32,10 +29,6 @@ final class TVStore {
     }
 
     private func persist() {
-        if let tv, let data = try? JSONEncoder().encode(tv) {
-            UserDefaults.standard.set(data, forKey: Self.key)
-        } else {
-            UserDefaults.standard.removeObject(forKey: Self.key)
-        }
+        SharedStore.saveTV(tv)
     }
 }

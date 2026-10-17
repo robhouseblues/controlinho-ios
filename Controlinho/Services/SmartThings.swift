@@ -69,6 +69,9 @@ final class SmartThings {
     init() {
         credentials = Keychain.value(Credentials.self, for: Self.credentialsKey)
         tokens = Keychain.value(Tokens.self, for: Self.tokensKey)
+        // Rewriting moves items saved by older versions into the shared Keychain group.
+        if credentials != nil { Keychain.setValue(credentials, for: Self.credentialsKey) }
+        if tokens != nil { Keychain.setValue(tokens, for: Self.tokensKey) }
     }
 
     // MARK: Setup

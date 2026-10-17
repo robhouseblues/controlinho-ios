@@ -8,24 +8,58 @@
 
 /* Begin PBXBuildFile section */
 		16DDF6EC1A9903F9FBBF29FB /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C26777B4F2C0CB6C1FCEA3 /* Keychain.swift */; };
+		19E2F33E79AA38C71406030E /* RemoteIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DF91B2359E05B801F47307 /* RemoteIntents.swift */; };
+		1C9D0CFD27A9A8074C412CEC /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */; };
 		28C14B0D97867E35E3E49378 /* SmartThings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD73D9DF220F8D4B5D33A44 /* SmartThings.swift */; };
 		2E93CABF8CB409B4D8B21542 /* TVSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13ABE684518247FFAFF8681A /* TVSettingsView.swift */; };
+		311BD1F2CB008D44E6E4C538 /* ControlinhoControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47397007452E7E39ED045D8 /* ControlinhoControls.swift */; };
 		354E8DF0B676D0F73A2993D6 /* SamsungTVClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D660D28D06C4D8BB8FB893 /* SamsungTVClient.swift */; };
 		55A6D99838424791C575C6EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 706A49FCBED7C20BF00B52A8 /* Assets.xcassets */; };
+		584AF4B9E3B9DF261CEDF0C1 /* LocalNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C524BDC53B80BE107D3897 /* LocalNetwork.swift */; };
+		6A0DAF8FB845894A2018F664 /* QuickRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607A04D01B96788498A6FE1 /* QuickRemote.swift */; };
 		6B56D9A2D0D037A1B6123809 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C26D7463B2673B14B8F0579 /* TVStore.swift */; };
 		6D788803C6A3198D8C611841 /* TVKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A96B8B79113F4DF350559 /* TVKey.swift */; };
+		6EF814C1727F233D8F5A138B /* SmartThings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD73D9DF220F8D4B5D33A44 /* SmartThings.swift */; };
+		7633C70E8BF67CAFCFD0BD3C /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */; };
 		7CD2E49F0B3CA0FACCD7237E /* PixelKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393AF2DF073CFE1E5BEB9249 /* PixelKit.swift */; };
 		8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */; };
 		86DD4820A7758C25AE858895 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */; };
+		8D23F622A486C4A80772EFBA /* ControlinhoControls.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 86E1D111528263461F70C9E8 /* ControlinhoControls.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B2FE6CBC958A4E7E0FBBFE34 /* SmartThingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F870A618D448610B6A97EBEF /* SmartThingsSection.swift */; };
+		BBDCFB015A96AF185112F444 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C26777B4F2C0CB6C1FCEA3 /* Keychain.swift */; };
 		BBFC217CE91423FDA46B95B8 /* PixelifySans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45D67AF9120FA66BCDB17983 /* PixelifySans.ttf */; };
 		C6E305B3862E876108F2FE01 /* PixelifySans-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 362A40A377508B0609BE2A8A /* PixelifySans-OFL.txt */; };
 		CD04665D37878EA34002B98D /* LocalNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C524BDC53B80BE107D3897 /* LocalNetwork.swift */; };
 		D1ACF6813885C501D0989E68 /* PixelForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09178757A3903C31E267EEB /* PixelForm.swift */; };
 		D3B0D42415D49B5574C85FD3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E20B663F0D2C680061AA47 /* SetupView.swift */; };
 		E0EF47E82060BD49074D3128 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99BCABCD3D801BEA31DC41C6 /* Components.swift */; };
+		E71B3475503A56C506C6B820 /* TVKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A96B8B79113F4DF350559 /* TVKey.swift */; };
 		F8F77A363B99ADDC397C065E /* ControlinhoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BD365D524EC3012EDDCFA674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B3A40A037E2BE6A4F7AC694 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B149ABBB0882EFCE8BBAED67;
+			remoteInfo = ControlinhoControls;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6DED0057D92BC49494C3F686 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8D23F622A486C4A80772EFBA /* ControlinhoControls.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		039ABD375320512AB992A15F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -41,13 +75,21 @@
 		692A96B8B79113F4DF350559 /* TVKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVKey.swift; sourceTree = "<group>"; };
 		706A49FCBED7C20BF00B52A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C26D7463B2673B14B8F0579 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
+		8607A04D01B96788498A6FE1 /* QuickRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickRemote.swift; sourceTree = "<group>"; };
+		86E1D111528263461F70C9E8 /* ControlinhoControls.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = ControlinhoControls.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AD73D9DF220F8D4B5D33A44 /* SmartThings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartThings.swift; sourceTree = "<group>"; };
 		96C524BDC53B80BE107D3897 /* LocalNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNetwork.swift; sourceTree = "<group>"; };
 		98E20B663F0D2C680061AA47 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		99BCABCD3D801BEA31DC41C6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		A47397007452E7E39ED045D8 /* ControlinhoControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlinhoControls.swift; sourceTree = "<group>"; };
+		BEF22A80F2343A8A496300FE /* Controlinho.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Controlinho.entitlements; sourceTree = "<group>"; };
+		C2DF91B2359E05B801F47307 /* RemoteIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteIntents.swift; sourceTree = "<group>"; };
 		D09178757A3903C31E267EEB /* PixelForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelForm.swift; sourceTree = "<group>"; };
+		D09DF689F1F6B730943F61C6 /* ControlinhoControls.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ControlinhoControls.entitlements; sourceTree = "<group>"; };
 		D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
 		E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlinhoApp.swift; sourceTree = "<group>"; };
+		F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
+		F4B8B7024DA750C8ADA0EC0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F870A618D448610B6A97EBEF /* SmartThingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartThingsSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				706A49FCBED7C20BF00B52A8 /* Assets.xcassets */,
+				BEF22A80F2343A8A496300FE /* Controlinho.entitlements */,
 				E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */,
 				039ABD375320512AB992A15F /* Info.plist */,
 				9E29E1C9DF9BC6F2F306383C /* Models */,
@@ -66,12 +109,25 @@
 			path = Controlinho;
 			sourceTree = "<group>";
 		};
+		136ACA96BAFEE6994BDC21BF /* ControlinhoControls */ = {
+			isa = PBXGroup;
+			children = (
+				D09DF689F1F6B730943F61C6 /* ControlinhoControls.entitlements */,
+				A47397007452E7E39ED045D8 /* ControlinhoControls.swift */,
+				F4B8B7024DA750C8ADA0EC0F /* Info.plist */,
+				8607A04D01B96788498A6FE1 /* QuickRemote.swift */,
+				C2DF91B2359E05B801F47307 /* RemoteIntents.swift */,
+			);
+			path = ControlinhoControls;
+			sourceTree = "<group>";
+		};
 		2CC8565363CCDF9D6FF074FC /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				68C26777B4F2C0CB6C1FCEA3 /* Keychain.swift */,
 				96C524BDC53B80BE107D3897 /* LocalNetwork.swift */,
 				25D660D28D06C4D8BB8FB893 /* SamsungTVClient.swift */,
+				F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */,
 				8AD73D9DF220F8D4B5D33A44 /* SmartThings.swift */,
 				38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */,
 				7C26D7463B2673B14B8F0579 /* TVStore.swift */,
@@ -83,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				6656E0CF7A63AEB37ED38591 /* Controlinho.app */,
+				86E1D111528263461F70C9E8 /* ControlinhoControls.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +158,7 @@
 			children = (
 				CE420A447BFE56DEB649150A /* Config */,
 				1010091EEB8B8AAC15061AEC /* Controlinho */,
+				136ACA96BAFEE6994BDC21BF /* ControlinhoControls */,
 				3A97736D9DA7797BA1E9ED66 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -152,10 +210,12 @@
 			buildPhases = (
 				DA7FCB417293176FA629FDC0 /* Sources */,
 				87D2C4B60ED8100396F5DE7E /* Resources */,
+				6DED0057D92BC49494C3F686 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4E757141287953F2417A48AE /* PBXTargetDependency */,
 			);
 			name = Controlinho;
 			packageProductDependencies = (
@@ -163,6 +223,23 @@
 			productName = Controlinho;
 			productReference = 6656E0CF7A63AEB37ED38591 /* Controlinho.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B149ABBB0882EFCE8BBAED67 /* ControlinhoControls */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 832DAD76155145A4E513ACA3 /* Build configuration list for PBXNativeTarget "ControlinhoControls" */;
+			buildPhases = (
+				74FA444E346843C2C28D15B8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ControlinhoControls;
+			packageProductDependencies = (
+			);
+			productName = ControlinhoControls;
+			productReference = 86E1D111528263461F70C9E8 /* ControlinhoControls.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -174,6 +251,9 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1EBD33E13C9A4F38F0B3F3BC = {
+						ProvisioningStyle = Automatic;
+					};
+					B149ABBB0882EFCE8BBAED67 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -193,6 +273,7 @@
 			projectRoot = "";
 			targets = (
 				1EBD33E13C9A4F38F0B3F3BC /* Controlinho */,
+				B149ABBB0882EFCE8BBAED67 /* ControlinhoControls */,
 			);
 		};
 /* End PBXProject section */
@@ -211,6 +292,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		74FA444E346843C2C28D15B8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				311BD1F2CB008D44E6E4C538 /* ControlinhoControls.swift in Sources */,
+				BBDCFB015A96AF185112F444 /* Keychain.swift in Sources */,
+				584AF4B9E3B9DF261CEDF0C1 /* LocalNetwork.swift in Sources */,
+				6A0DAF8FB845894A2018F664 /* QuickRemote.swift in Sources */,
+				19E2F33E79AA38C71406030E /* RemoteIntents.swift in Sources */,
+				1C9D0CFD27A9A8074C412CEC /* SharedStore.swift in Sources */,
+				6EF814C1727F233D8F5A138B /* SmartThings.swift in Sources */,
+				E71B3475503A56C506C6B820 /* TVKey.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DA7FCB417293176FA629FDC0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -224,6 +320,7 @@
 				8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */,
 				354E8DF0B676D0F73A2993D6 /* SamsungTVClient.swift in Sources */,
 				D3B0D42415D49B5574C85FD3 /* SetupView.swift in Sources */,
+				7633C70E8BF67CAFCFD0BD3C /* SharedStore.swift in Sources */,
 				28C14B0D97867E35E3E49378 /* SmartThings.swift in Sources */,
 				B2FE6CBC958A4E7E0FBBFE34 /* SmartThingsSection.swift in Sources */,
 				86DD4820A7758C25AE858895 /* TVDiscovery.swift in Sources */,
@@ -234,6 +331,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4E757141287953F2417A48AE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B149ABBB0882EFCE8BBAED67 /* ControlinhoControls */;
+			targetProxy = BD365D524EC3012EDDCFA674 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4E020C90251CDDBB75B9B382 /* Release */ = {
@@ -297,6 +402,7 @@
 			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Controlinho/Controlinho.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Controlinho/Info.plist;
@@ -315,6 +421,7 @@
 			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Controlinho/Controlinho.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Controlinho/Info.plist;
@@ -324,6 +431,26 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.robhouseblues.controlinho;
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CB364CE9C4C0219460CBD41D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ControlinhoControls/ControlinhoControls.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ControlinhoControls/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.robhouseblues.controlinho.controls;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -391,6 +518,26 @@
 			};
 			name = Debug;
 		};
+		F7F6BF8CD016211EFBFF205E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ControlinhoControls/ControlinhoControls.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ControlinhoControls/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.robhouseblues.controlinho.controls;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -408,6 +555,15 @@
 			buildConfigurations = (
 				E0ECCD8E7FCEF7166E7CA7C9 /* Debug */,
 				4E020C90251CDDBB75B9B382 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		832DAD76155145A4E513ACA3 /* Build configuration list for PBXNativeTarget "ControlinhoControls" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB364CE9C4C0219460CBD41D /* Debug */,
+				F7F6BF8CD016211EFBFF205E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

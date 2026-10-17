@@ -4,6 +4,9 @@ import Security
 /// Minimal wrapper for storing secrets (SmartThings credentials and tokens) in the Keychain.
 enum Keychain {
     private static let service = "com.robhouseblues.controlinho"
+    /// Shared with the Control Center extension. Reads search every group the app can
+    /// access, so items saved before sharing existed are still found (and moved on write).
+    private static let accessGroup = SharedStore.appGroup
 
     static func data(for key: String) -> Data? {
         let query: [String: Any] = [
@@ -27,6 +30,7 @@ enum Keychain {
         SecItemDelete(query as CFDictionary)
         guard let data else { return }
         var item = query
+        item[kSecAttrAccessGroup as String] = accessGroup
         item[kSecValueData as String] = data
         item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
         SecItemAdd(item as CFDictionary, nil)

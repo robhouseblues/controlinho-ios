@@ -28,8 +28,6 @@ final class SamsungTVClient {
     /// Called each time the TV accepts the connection.
     var onConnected: (() -> Void)?
 
-    private static let appName = Data("Controlinho".utf8).base64EncodedString()
-
     private var tv: SavedTV?
     private var task: URLSessionWebSocketTask?
     private var useLegacyPort = false
@@ -38,7 +36,7 @@ final class SamsungTVClient {
 
     @ObservationIgnored
     private lazy var session: URLSession = {
-        let delegate = SocketDelegate()
+        let delegate = TVSocketDelegate()
         delegate.onOpen = { [weak self] task in
             Task { @MainActor in self?.socketDidOpen(task) }
         }
@@ -72,17 +70,7 @@ final class SamsungTVClient {
 
     private func open() {
         guard let tv else { return }
-        var components = URLComponents()
-        components.scheme = useLegacyPort ? "ws" : "wss"
-        components.host = tv.host
-        components.port = useLegacyPort ? 8001 : 8002
-        components.path = "/api/v2/channels/samsung.remote.control"
-        var query = [URLQueryItem(name: "name", value: Self.appName)]
-        if let token = tv.token, !useLegacyPort {
-            query.append(URLQueryItem(name: "token", value: token))
-        }
-        components.queryItems = query
-        guard let url = components.url else {
+        guard let url = TVRemoteSocket.url(for: tv, legacy: useLegacyPort) else {
             state = .failed("Invalid TV address.")
             return
         }
@@ -185,15 +173,7 @@ final class SamsungTVClient {
 
     func send(_ key: TVKey) {
         commandCount += 1
-        enqueue([
-            "method": "ms.remote.control",
-            "params": [
-                "Cmd": "Click",
-                "DataOfCmd": key.rawValue,
-                "Option": "false",
-                "TypeOfRemote": "SendRemoteKey",
-            ],
-        ])
+        enqueueText(TVRemoteSocket.keyPayload(key))
     }
 
     enum LaunchResult {
@@ -244,7 +224,10 @@ final class SamsungTVClient {
             let data = try? JSONSerialization.data(withJSONObject: payload),
             let text = String(data: data, encoding: .utf8)
         else { return }
+        enqueueText(text)
+    }
 
+    private func enqueueText(_ text: String) {
         if state == .connected, let task {
             task.send(.string(text)) { _ in }
         } else {
@@ -260,30 +243,5 @@ final class SamsungTVClient {
             task.send(.string(text)) { _ in }
         }
         pending.removeAll()
-    }
-}
-
-/// Reports socket opens and accepts the self-signed certificate Samsung TVs serve on port 8002.
-private final class SocketDelegate: NSObject, URLSessionWebSocketDelegate {
-    var onOpen: ((URLSessionWebSocketTask) -> Void)?
-
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        onOpen?(webSocketTask)
-    }
-
-    func urlSession(
-        _ session: URLSession,
-        didReceive challenge: URLAuthenticationChallenge,
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
-    ) {
-        guard
-            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            let trust = challenge.protectionSpace.serverTrust,
-            LocalNetwork.isPrivateIPv4(challenge.protectionSpace.host)
-        else {
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-        completionHandler(.useCredential, URLCredential(trust: trust))
     }
 }
