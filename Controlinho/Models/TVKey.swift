@@ -69,13 +69,18 @@ enum TVBrand: String, Codable {
         }
     }
 
+    /// Support that hasn't been tried on a real TV yet, flagged as beta in the app.
+    var isBeta: Bool {
+        self == .lg
+    }
+
     /// The setting that keeps the TV's network alive in standby, so it can be woken.
     var wakeSettingHint: String {
         switch self {
         case .samsung:
             "Power On with Mobile on the TV (Settings › General › Network › Expert Settings, or Settings › Connection › Network › Expert Settings on newer models)"
         case .lg:
-            "Turn on via Wi-Fi on the TV (under Mobile TV On or TV On With Mobile, in the TV's General or Connection settings, depending on the model)"
+            "the TV's \"Turn on via Wi-Fi\" option (under Mobile TV On or TV On With Mobile, in its General or Connection settings, depending on the model)"
         }
     }
 }

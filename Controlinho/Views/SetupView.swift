@@ -24,7 +24,7 @@ struct SetupView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(12)
                     } else if found.isEmpty {
-                        Text("No TVs found. Make sure the TV is on and connected to the same Wi-Fi.")
+                        Text("No TVs found. Make sure the TV is on and connected to the same Wi-Fi. On an LG TV, also turn on LG Connect Apps in its network settings.")
                             .pixelFont(16)
                             .foregroundStyle(Palette.textSoft)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -36,7 +36,10 @@ struct SetupView: View {
                             HStack(spacing: 14) {
                                 PixelIcon(.source).foregroundStyle(Palette.accent)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(tv.name).pixelFont(17, weight: .semibold).foregroundStyle(Palette.text)
+                                    HStack(spacing: 8) {
+                                        Text(tv.name).pixelFont(17, weight: .semibold).foregroundStyle(Palette.text)
+                                        if tv.brand.isBeta { PixelBadge(text: "BETA") }
+                                    }
                                     Text([tv.model, tv.host].compactMap { $0 }.joined(separator: " · "))
                                         .pixelFont(13)
                                         .foregroundStyle(Palette.textSoft)
@@ -106,8 +109,7 @@ struct SetupView: View {
         if let found = await TVDiscovery.identify(host: host) {
             pair(found.savedTV)
         } else {
-            // Some Samsung firmwares hide the info endpoint; try the remote socket anyway.
-            pair(SavedTV(brand: .samsung, host: host, name: DiscoveredTV.genericName(for: .samsung)))
+            manualError = "Couldn't find a Samsung or LG TV at that address. Make sure the TV is on. On an LG TV, also turn on LG Connect Apps in its network settings."
         }
     }
 

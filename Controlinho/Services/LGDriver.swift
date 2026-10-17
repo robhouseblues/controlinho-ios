@@ -104,7 +104,7 @@ final class LGDriver: TVDriver {
                 self?.state = .failed("The TV didn't accept the pairing request. Try again and choose Accept on the TV.")
             } catch {
                 self?.connecting = nil
-                self?.state = .failed("Couldn't reach the TV. Make sure it's on and on the same Wi-Fi.")
+                self?.state = .failed("Couldn't reach the TV. Make sure it's on and on the same Wi-Fi, and that LG Connect Apps is turned on in its network settings.")
             }
             return false
         }

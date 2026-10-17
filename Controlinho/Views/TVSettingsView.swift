@@ -16,6 +16,8 @@ struct TVSettingsView: View {
                 if let tv = store.tv {
                     PixelSection(title: "TV") {
                         PixelInfoRow(label: "Name", value: tv.name)
+                        PixelDivider()
+                        PixelInfoRow(label: "Brand", value: tv.kind.displayName, badge: tv.kind.isBeta ? "BETA" : nil)
                         if let model = tv.model {
                             PixelDivider()
                             PixelInfoRow(label: "Model", value: model)

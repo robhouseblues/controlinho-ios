@@ -77,6 +77,7 @@ struct PixelDivider: View {
 struct PixelInfoRow: View {
     let label: String
     let value: String
+    var badge: String?
 
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
@@ -86,9 +87,25 @@ struct PixelInfoRow: View {
                 .pixelFont(16)
                 .foregroundStyle(Palette.textSoft)
                 .multilineTextAlignment(.trailing)
+            if let badge { PixelBadge(text: badge) }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 11)
+    }
+}
+
+/// A small brass tag, like "BETA".
+struct PixelBadge: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .pixelFont(11, weight: .bold)
+            .foregroundStyle(PixelTone.brass.content)
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .background(PixelBox(tone: .brass))
+            .fixedSize()
     }
 }
 
