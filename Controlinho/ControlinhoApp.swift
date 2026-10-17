@@ -17,6 +17,9 @@ struct ControlinhoApp: App {
                 .tint(Palette.brass)
                 .onAppear {
                     client.onTokenUpdate = { [store] token in store.updateToken(token) }
+                    client.onPortConfirmed = { [store] legacy in
+                        if store.tv?.usesLegacyPort != legacy { store.tv?.usesLegacyPort = legacy }
+                    }
                     client.onConnected = { [store] in
                         guard let host = store.tv?.host else { return }
                         Task {

@@ -28,6 +28,9 @@ final class SamsungTVClient {
     /// Called each time the TV accepts the connection.
     var onConnected: (() -> Void)?
 
+    /// Called with whether the TV only accepted the legacy port.
+    var onPortConfirmed: ((Bool) -> Void)?
+
     private var tv: SavedTV?
     private var task: URLSessionWebSocketTask?
     private var useLegacyPort = false
@@ -48,7 +51,7 @@ final class SamsungTVClient {
     func connect(to tv: SavedTV) {
         disconnect()
         self.tv = tv
-        useLegacyPort = false
+        useLegacyPort = tv.usesLegacyPort ?? false
         open()
     }
 
@@ -152,6 +155,7 @@ final class SamsungTVClient {
         case "ms.channel.connect":
             approvalTimer?.cancel()
             state = .connected
+            onPortConfirmed?(useLegacyPort)
             if let token = (json["data"] as? [String: Any])?["token"] as? String {
                 tv?.token = token
                 onTokenUpdate?(token)

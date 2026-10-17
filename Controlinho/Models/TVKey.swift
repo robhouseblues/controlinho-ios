@@ -62,6 +62,8 @@ struct SavedTV: Codable, Equatable {
     var manualMAC: String?
     var isWired: Bool?
     var token: String?
+    /// True for pre-2018 TVs that only accept the plain `ws://…:8001` socket.
+    var usesLegacyPort: Bool?
     /// The TV's device in SmartThings, used to switch it on through the cloud.
     var smartThingsDeviceID: String?
     var smartThingsDeviceName: String?

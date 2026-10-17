@@ -1,43 +1,49 @@
 import AppIntents
 
-/// The keys offered as Control Center controls.
-enum RemoteKey: String, AppEnum {
-    case volumeUp
-    case volumeDown
-    case mute
+// One parameterless intent per key. A single intent with a "key" parameter lost its value
+// when Control Center ran it (the system logged `RemoteKey(nil)` and skipped perform).
 
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = "TV Key"
-    static let caseDisplayRepresentations: [RemoteKey: DisplayRepresentation] = [
-        .volumeUp: "Volume Up",
-        .volumeDown: "Volume Down",
-        .mute: "Mute",
-    ]
+struct VolumeUpIntent: AppIntent {
+    static let title: LocalizedStringResource = "TV Volume Up"
 
-    var tvKey: TVKey {
-        switch self {
-        case .volumeUp: .volumeUp
-        case .volumeDown: .volumeDown
-        case .mute: .mute
-        }
+    func perform() async throws -> some IntentResult {
+        try await QuickRemote.press(.volumeUp)
+        return .result()
     }
 }
 
-/// Presses one remote key on the paired TV.
-struct SendKeyIntent: AppIntent {
-    static let title: LocalizedStringResource = "Press TV Key"
-    static let description = IntentDescription("Presses a key on your Samsung TV.")
-
-    @Parameter(title: "Key")
-    var key: RemoteKey
-
-    init() {}
-
-    init(key: RemoteKey) {
-        self.key = key
-    }
+struct VolumeDownIntent: AppIntent {
+    static let title: LocalizedStringResource = "TV Volume Down"
 
     func perform() async throws -> some IntentResult {
-        try await QuickRemote.press(key.tvKey)
+        try await QuickRemote.press(.volumeDown)
+        return .result()
+    }
+}
+
+struct MuteIntent: AppIntent {
+    static let title: LocalizedStringResource = "TV Mute"
+
+    func perform() async throws -> some IntentResult {
+        try await QuickRemote.press(.mute)
+        return .result()
+    }
+}
+
+struct PauseIntent: AppIntent {
+    static let title: LocalizedStringResource = "TV Pause"
+
+    func perform() async throws -> some IntentResult {
+        try await QuickRemote.press(.pause)
+        return .result()
+    }
+}
+
+struct OKIntent: AppIntent {
+    static let title: LocalizedStringResource = "TV OK"
+
+    func perform() async throws -> some IntentResult {
+        try await QuickRemote.press(.enter)
         return .result()
     }
 }

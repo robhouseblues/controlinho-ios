@@ -11,6 +11,8 @@ struct ControlinhoControls: WidgetBundle {
         VolumeUpControl()
         VolumeDownControl()
         MuteControl()
+        PauseControl()
+        OKControl()
     }
 }
 
@@ -29,7 +31,7 @@ struct PowerControl: ControlWidget {
 struct VolumeUpControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "com.robhouseblues.controlinho.volume-up") {
-            ControlWidgetButton(action: SendKeyIntent(key: .volumeUp)) {
+            ControlWidgetButton(action: VolumeUpIntent()) {
                 Label("TV Volume Up", systemImage: "speaker.plus.fill")
             }
         }
@@ -41,7 +43,7 @@ struct VolumeUpControl: ControlWidget {
 struct VolumeDownControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "com.robhouseblues.controlinho.volume-down") {
-            ControlWidgetButton(action: SendKeyIntent(key: .volumeDown)) {
+            ControlWidgetButton(action: VolumeDownIntent()) {
                 Label("TV Volume Down", systemImage: "speaker.minus.fill")
             }
         }
@@ -53,11 +55,35 @@ struct VolumeDownControl: ControlWidget {
 struct MuteControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "com.robhouseblues.controlinho.mute") {
-            ControlWidgetButton(action: SendKeyIntent(key: .mute)) {
+            ControlWidgetButton(action: MuteIntent()) {
                 Label("TV Mute", systemImage: "speaker.slash.fill")
             }
         }
         .displayName("TV Mute")
         .description("Mutes or unmutes your Samsung TV.")
+    }
+}
+
+struct PauseControl: ControlWidget {
+    var body: some ControlWidgetConfiguration {
+        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.pause") {
+            ControlWidgetButton(action: PauseIntent()) {
+                Label("TV Pause", systemImage: "pause.fill")
+            }
+        }
+        .displayName("TV Pause")
+        .description("Pauses what's playing on your Samsung TV.")
+    }
+}
+
+struct OKControl: ControlWidget {
+    var body: some ControlWidgetConfiguration {
+        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.ok") {
+            ControlWidgetButton(action: OKIntent()) {
+                Label("TV OK", systemImage: "checkmark.circle.fill")
+            }
+        }
+        .displayName("TV OK")
+        .description("Presses OK on your Samsung TV's remote.")
     }
 }

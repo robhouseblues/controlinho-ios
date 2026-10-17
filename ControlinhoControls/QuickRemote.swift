@@ -16,19 +16,12 @@ enum QuickRemoteError: LocalizedError {
     }
 }
 
-/// Short-lived remote used by the Control Center controls: connect, press one key, disconnect.
+/// Remote used by the Control Center controls.
 enum QuickRemote {
     /// Presses one key on the TV.
     static func press(_ key: TVKey) async throws {
-        guard var tv = SharedStore.loadTV() else { throw QuickRemoteError.noTV }
-        let (session, socket) = try await open(&tv)
-        defer {
-            socket.cancel(with: .normalClosure, reason: nil)
-            session.finishTasksAndInvalidate()
-        }
-        try await socket.send(.string(TVRemoteSocket.keyPayload(key)))
-        // Give the message a moment to leave before the extension is suspended.
-        try? await Task.sleep(for: .milliseconds(250))
+        guard let tv = SharedStore.loadTV() else { throw QuickRemoteError.noTV }
+        try await RemoteConnection.shared.send(TVRemoteSocket.keyPayload(key), to: tv)
     }
 
     /// Switches a TV in standby on, over the local network and/or SmartThings.
@@ -47,46 +40,104 @@ enum QuickRemote {
         }
         guard didSomething else { throw QuickRemoteError.cantWake }
         // Wake-on-LAN packets are sent asynchronously; let them go out.
-        try? await Task.sleep(for: .milliseconds(500))
+        try? await Task.sleep(for: .milliseconds(300))
+    }
+}
+
+/// Keeps the TV socket open for a short while after a press, so a burst of presses
+/// (say, several volume-ups) skips the connection handshake and feels instant.
+actor RemoteConnection {
+    static let shared = RemoteConnection()
+
+    private static let connectTimeout: Duration = .milliseconds(2500)
+    private static let idleTimeout: Duration = .seconds(20)
+
+    private var session: URLSession?
+    private var socket: URLSessionWebSocketTask?
+    private var host: String?
+    private var closeTimer: Task<Void, Never>?
+
+    func send(_ text: String, to tv: SavedTV) async throws {
+        if let socket, host == tv.host, socket.state == .running {
+            do {
+                try await socket.send(.string(text))
+                keepAlive()
+                return
+            } catch {
+                // The TV dropped the idle connection; open a fresh one below.
+                close()
+            }
+        }
+        try await open(tv)
+        try await socket?.send(.string(text))
+        keepAlive()
     }
 
-    private static func open(_ tv: inout SavedTV) async throws -> (URLSession, URLSessionWebSocketTask) {
+    private func open(_ tv: SavedTV) async throws {
+        var tv = tv
+        // Try the port this TV is known to use first; only probe the other one if unknown.
+        let preferred = tv.usesLegacyPort ?? false
         do {
-            return try await connect(&tv, legacy: false)
+            try await connect(&tv, legacy: preferred)
         } catch QuickRemoteError.notPaired {
             throw QuickRemoteError.notPaired
-        } catch {
-            // Pre-2018 TVs only listen on the plain port.
-            return try await connect(&tv, legacy: true)
+        } catch where tv.usesLegacyPort == nil {
+            try await connect(&tv, legacy: !preferred)
         }
     }
 
-    private static func connect(_ tv: inout SavedTV, legacy: Bool) async throws -> (URLSession, URLSessionWebSocketTask) {
+    private func connect(_ tv: inout SavedTV, legacy: Bool) async throws {
         guard let url = TVRemoteSocket.url(for: tv, legacy: legacy) else { throw QuickRemoteError.unreachable }
         let session = URLSession(configuration: .ephemeral, delegate: TVSocketDelegate(), delegateQueue: nil)
         let socket = session.webSocketTask(with: url)
         socket.resume()
         do {
             let token = try await withThrowingTaskGroup(of: String?.self) { group in
-                group.addTask { try await waitForConnect(socket) }
+                group.addTask { try await Self.waitForConnect(socket) }
                 group.addTask {
-                    try await Task.sleep(for: .seconds(4))
+                    try await Task.sleep(for: Self.connectTimeout)
                     throw QuickRemoteError.unreachable
                 }
                 defer { group.cancelAll() }
                 return try await group.next() ?? nil
             }
-            // The TV may hand out a fresh pairing token; keep the app in sync.
+            // Keep the app in sync with a fresh pairing token and the port that worked.
+            var changed = false
             if let token, token != tv.token, !legacy {
                 tv.token = token
-                SharedStore.saveTV(tv)
+                changed = true
             }
-            return (session, socket)
+            if tv.usesLegacyPort != legacy {
+                tv.usesLegacyPort = legacy
+                changed = true
+            }
+            if changed { SharedStore.saveTV(tv) }
         } catch {
             socket.cancel(with: .goingAway, reason: nil)
             session.invalidateAndCancel()
             throw error
         }
+        self.session = session
+        self.socket = socket
+        self.host = tv.host
+    }
+
+    private func keepAlive() {
+        closeTimer?.cancel()
+        closeTimer = Task { [weak self] in
+            try? await Task.sleep(for: Self.idleTimeout)
+            guard !Task.isCancelled else { return }
+            await self?.close()
+        }
+    }
+
+    private func close() {
+        closeTimer?.cancel()
+        socket?.cancel(with: .normalClosure, reason: nil)
+        session?.finishTasksAndInvalidate()
+        socket = nil
+        session = nil
+        host = nil
     }
 
     /// Waits for the TV to accept the connection and returns its pairing token, if any.
