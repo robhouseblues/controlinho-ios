@@ -7,7 +7,7 @@ import SwiftUI
 @MainActor
 @Observable
 final class Purchases {
-    static let plusID = "com.robhouseblues.controlinho.plus"
+    static let plusID = "com.tsikadatech.controlinho.plus"
 
     private static let ownedKey = "hasPlus"
 

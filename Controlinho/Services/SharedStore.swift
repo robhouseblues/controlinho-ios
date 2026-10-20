@@ -3,7 +3,7 @@ import Foundation
 /// Storage shared between the app and its Control Center extension through an App Group,
 /// so controls can reach the paired TVs without opening the app.
 enum SharedStore {
-    static let appGroup = "group.com.robhouseblues.controlinho"
+    static let appGroup = "group.com.tsikadatech.controlinho"
 
     private static let tvsKey = "savedTVs"
     private static let activeKey = "activeTVHost"

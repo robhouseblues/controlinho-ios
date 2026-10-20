@@ -18,7 +18,7 @@ struct ControlinhoControls: WidgetBundle {
 
 struct PowerControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.power") {
+        StaticControlConfiguration(kind: "com.tsikadatech.controlinho.power") {
             ControlWidgetButton(action: PowerIntent()) {
                 Label("TV Power", systemImage: "power")
             }
@@ -30,7 +30,7 @@ struct PowerControl: ControlWidget {
 
 struct VolumeUpControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.volume-up") {
+        StaticControlConfiguration(kind: "com.tsikadatech.controlinho.volume-up") {
             ControlWidgetButton(action: VolumeUpIntent()) {
                 Label("TV Volume Up", systemImage: "speaker.plus.fill")
             }
@@ -42,7 +42,7 @@ struct VolumeUpControl: ControlWidget {
 
 struct VolumeDownControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.volume-down") {
+        StaticControlConfiguration(kind: "com.tsikadatech.controlinho.volume-down") {
             ControlWidgetButton(action: VolumeDownIntent()) {
                 Label("TV Volume Down", systemImage: "speaker.minus.fill")
             }
@@ -54,7 +54,7 @@ struct VolumeDownControl: ControlWidget {
 
 struct MuteControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.mute") {
+        StaticControlConfiguration(kind: "com.tsikadatech.controlinho.mute") {
             ControlWidgetButton(action: MuteIntent()) {
                 Label("TV Mute", systemImage: "speaker.slash.fill")
             }
@@ -66,7 +66,7 @@ struct MuteControl: ControlWidget {
 
 struct PauseControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.pause") {
+        StaticControlConfiguration(kind: "com.tsikadatech.controlinho.pause") {
             ControlWidgetButton(action: PauseIntent()) {
                 Label("TV Pause", systemImage: "pause.fill")
             }
@@ -78,7 +78,7 @@ struct PauseControl: ControlWidget {
 
 struct OKControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: "com.robhouseblues.controlinho.ok") {
+        StaticControlConfiguration(kind: "com.tsikadatech.controlinho.ok") {
             ControlWidgetButton(action: OKIntent()) {
                 Label("TV OK", systemImage: "checkmark.circle.fill")
             }
