@@ -35,7 +35,7 @@ targets:
       path: Controlinho/Info.plist
       properties:
         CFBundleDisplayName: Controlinho
-        CFBundleShortVersionString: "1.0"
+        CFBundleShortVersionString: "1.0.0"
         CFBundleVersion: "1"
         UILaunchScreen:
           UIColorName: ""
@@ -144,7 +144,7 @@ targets:
       path: ControlinhoControls/Info.plist
       properties:
         CFBundleDisplayName: Controlinho
-        CFBundleShortVersionString: "1.0"
+        CFBundleShortVersionString: "1.0.0"
         CFBundleVersion: "1"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
