@@ -49,8 +49,8 @@ struct Rocker: View {
 
 /// Cross-shaped directional pad with an OK key in the middle, like a game controller.
 struct DPad: View {
+    var cell: CGFloat = 64
     let onKey: (TVKey) -> Void
-    private let cell: CGFloat = 64
 
     var body: some View {
         Grid(horizontalSpacing: 0, verticalSpacing: 0) {

@@ -1,20 +1,41 @@
 import SwiftUI
 
-/// Details about the paired TV, plus the MAC address used to switch it on.
+/// The saved TVs, details about the selected one, and the MAC address used to switch it on.
 struct TVSettingsView: View {
     @Environment(TVStore.self) private var store
     @Environment(TVClient.self) private var client
+    @Environment(Purchases.self) private var purchases
+    @Environment(Ads.self) private var ads
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
 
     @State private var manualMAC = ""
     @State private var didWake = false
     @State private var showSetup = false
+    @State private var showPlus = false
 
     var body: some View {
         NavigationStack {
             PixelPage {
+                if purchases.hasPlus {
+                    PixelSection(title: "Your TVs", trailing: AnyView(PixelBadge(text: "PLUS"))) {
+                        ForEach(Array(store.tvs.enumerated()), id: \.element.host) { index, tv in
+                            if index > 0 { PixelDivider() }
+                            PixelActionRow(title: tv.name, color: Palette.text, checked: tv.host == store.tv?.host) {
+                                select(tv)
+                            }
+                        }
+                        PixelDivider()
+                        PixelActionRow(title: "Add a TV") { showSetup = true }
+                    }
+                } else {
+                    PixelSection(title: "Controlinho Plus", footer: "Keep every TV in the house and remove the ads, with one purchase.") {
+                        PixelActionRow(title: "Get Plus") { showPlus = true }
+                    }
+                }
+
                 if let tv = store.tv {
-                    PixelSection(title: "TV") {
+                    PixelSection(title: purchases.hasPlus ? "This TV" : "TV") {
                         PixelInfoRow(label: "Name", value: tv.name)
                         PixelDivider()
                         PixelInfoRow(label: "Brand", value: tv.kind.displayName, badge: tv.kind.isBeta ? "BETA" : nil)
@@ -33,8 +54,10 @@ struct TVSettingsView: View {
                             client.connect(to: tv)
                             dismiss()
                         }
-                        PixelDivider()
-                        PixelActionRow(title: "Switch to another TV") { showSetup = true }
+                        if !purchases.hasPlus {
+                            PixelDivider()
+                            PixelActionRow(title: "Switch to another TV") { showSetup = true }
+                        }
                     }
 
                     PixelSection(title: "Turn on from phone", footer: footer(for: tv), footerIsWarning: footerIsWarning(tv)) {
@@ -53,18 +76,50 @@ struct TVSettingsView: View {
                         .disabled(tv.wakeMAC == nil)
                     }
 
+                    PixelSection(title: "Privacy") {
+                        PixelActionRow(title: "Privacy policy") { openURL(Self.privacyPolicy) }
+                        if !purchases.hasPlus && ads.offersPrivacyChoices {
+                            PixelDivider()
+                            PixelActionRow(title: "Ad privacy choices") {
+                                Task { await ads.showPrivacyChoices() }
+                            }
+                        }
+                    }
+
                     PixelSection {
-                        PixelActionRow(title: "Forget TV", color: Palette.red) {
-                            client.disconnect()
-                            store.tv = nil
-                            dismiss()
+                        PixelActionRow(title: store.tvs.count > 1 ? "Forget this TV" : "Forget TV", color: Palette.red) {
+                            forget(tv)
                         }
                     }
                 }
             }
             .pixelScreen("TV Settings", trailing: PixelBarAction(title: "Done", primary: true) { dismiss() })
             .onAppear { manualMAC = store.tv?.manualMAC ?? "" }
+            .onChange(of: store.tv?.host) {
+                manualMAC = store.tv?.manualMAC ?? ""
+                didWake = false
+            }
             .fullScreenCover(isPresented: $showSetup) { SetupView() }
+            .fullScreenCover(isPresented: $showPlus) { PlusView() }
+        }
+    }
+
+    /// Hosted on GitHub Pages from `privacy/index.html`; also the App Store listing's privacy link.
+    private static let privacyPolicy = URL(string: "https://robhouseblues.github.io/controlinho-ios/privacy/")!
+
+    private func select(_ tv: SavedTV) {
+        guard tv.host != store.tv?.host else { return }
+        store.select(tv.host)
+        client.connect(to: tv)
+    }
+
+    private func forget(_ tv: SavedTV) {
+        client.disconnect()
+        store.remove(tv.host)
+        if let next = store.tv {
+            client.connect(to: next)
+        } else {
+            dismiss()
         }
     }
 

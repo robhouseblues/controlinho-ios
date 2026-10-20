@@ -44,22 +44,31 @@ final class TVClient {
     /// Goes up by one for every key press or app launch, so the UI can react to it.
     private(set) var commandCount = 0
 
-    var onTokenUpdate: ((String) -> Void)?
+    /// Called with a new pairing token and the address of the TV that issued it.
+    var onTokenUpdate: ((String, String) -> Void)?
     /// Called each time the TV accepts the connection.
     var onConnected: (() -> Void)?
-    var onPortConfirmed: ((Bool) -> Void)?
+    /// Called with whether the TV only accepted its older port, and the TV's address.
+    var onPortConfirmed: ((Bool, String) -> Void)?
 
     @ObservationIgnored private var driver: TVDriver?
 
     func connect(to tv: SavedTV) {
-        driver?.disconnect()
+        if let previous = driver {
+            previous.disconnect()
+            previous.onStateChange = nil
+            previous.onTokenUpdate = nil
+            previous.onPortConfirmed = nil
+        }
         let driver: TVDriver = switch tv.kind {
         case .samsung: SamsungDriver(tv: tv)
         case .lg: LGDriver(tv: tv)
         }
         driver.onStateChange = { [weak self] state in self?.update(state) }
-        driver.onTokenUpdate = { [weak self] token in self?.onTokenUpdate?(token) }
-        driver.onPortConfirmed = { [weak self] legacy in self?.onPortConfirmed?(legacy) }
+        // Tagged with the address, so a late update from the previous TV can't land on this one.
+        let host = tv.host
+        driver.onTokenUpdate = { [weak self] token in self?.onTokenUpdate?(token, host) }
+        driver.onPortConfirmed = { [weak self] legacy in self?.onPortConfirmed?(legacy, host) }
         self.driver = driver
         driver.connect()
     }

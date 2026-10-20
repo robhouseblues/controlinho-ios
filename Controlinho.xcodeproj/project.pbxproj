@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0AE5515EA985C79ECEC69324 /* PlusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC0B12A97A3D0FD07B57FA7 /* PlusView.swift */; };
 		19E2F33E79AA38C71406030E /* RemoteIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DF91B2359E05B801F47307 /* RemoteIntents.swift */; };
 		1C9D0CFD27A9A8074C412CEC /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */; };
 		2E93CABF8CB409B4D8B21542 /* TVSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13ABE684518247FFAFF8681A /* TVSettingsView.swift */; };
 		311BD1F2CB008D44E6E4C538 /* ControlinhoControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47397007452E7E39ED045D8 /* ControlinhoControls.swift */; };
 		41EB3C0D94F1407978C900DF /* TVClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1407C88ADF176B1A98365716 /* TVClient.swift */; };
+		4BF1F7261495057DC7552E7B /* Ads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7B08A8828C00A9D0E26A28 /* Ads.swift */; };
 		55A6D99838424791C575C6EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 706A49FCBED7C20BF00B52A8 /* Assets.xcassets */; };
 		584AF4B9E3B9DF261CEDF0C1 /* LocalNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C524BDC53B80BE107D3897 /* LocalNetwork.swift */; };
+		5EE7089CDC611518C2EF57A4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 99773FA309FD7C36BB51BDCE /* PrivacyInfo.xcprivacy */; };
 		6A0DAF8FB845894A2018F664 /* QuickRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607A04D01B96788498A6FE1 /* QuickRemote.swift */; };
 		6B56D9A2D0D037A1B6123809 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C26D7463B2673B14B8F0579 /* TVStore.swift */; };
 		6D788803C6A3198D8C611841 /* TVKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A96B8B79113F4DF350559 /* TVKey.swift */; };
@@ -23,7 +26,9 @@
 		8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */; };
 		86DD4820A7758C25AE858895 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */; };
 		8D23F622A486C4A80772EFBA /* ControlinhoControls.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 86E1D111528263461F70C9E8 /* ControlinhoControls.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		999C4820289BF87FE83E331C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4FB0EFFA0C6DA1D6170DC5F4 /* PrivacyInfo.xcprivacy */; };
 		A55CD5E7E4F0A3B4F8F1F2A2 /* LGConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68C2BD40270E666C63746B3 /* LGConnection.swift */; };
+		B4BC98CAA96C52B9EDFCBED4 /* AdStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DC0511EFE3D7E5010480D4 /* AdStrip.swift */; };
 		B918702B6CD4AD9A7EF903BB /* LGDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780189DA66685C31824DBB09 /* LGDriver.swift */; };
 		BBFC217CE91423FDA46B95B8 /* PixelifySans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45D67AF9120FA66BCDB17983 /* PixelifySans.ttf */; };
 		C6E305B3862E876108F2FE01 /* PixelifySans-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 362A40A377508B0609BE2A8A /* PixelifySans-OFL.txt */; };
@@ -31,8 +36,10 @@
 		CD04665D37878EA34002B98D /* LocalNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C524BDC53B80BE107D3897 /* LocalNetwork.swift */; };
 		D1ACF6813885C501D0989E68 /* PixelForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09178757A3903C31E267EEB /* PixelForm.swift */; };
 		D3B0D42415D49B5574C85FD3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E20B663F0D2C680061AA47 /* SetupView.swift */; };
+		E0700D4213895A775416E0B6 /* Purchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = D808B82538A801730C831553 /* Purchases.swift */; };
 		E0EF47E82060BD49074D3128 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99BCABCD3D801BEA31DC41C6 /* Components.swift */; };
 		E71B3475503A56C506C6B820 /* TVKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692A96B8B79113F4DF350559 /* TVKey.swift */; };
+		F607749C95A68656C532350D /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 9AACD35952536E35565917AE /* GoogleMobileAds */; };
 		F8F77A363B99ADDC397C065E /* ControlinhoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -64,11 +71,14 @@
 		039ABD375320512AB992A15F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		13ABE684518247FFAFF8681A /* TVSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSettingsView.swift; sourceTree = "<group>"; };
 		1407C88ADF176B1A98365716 /* TVClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVClient.swift; sourceTree = "<group>"; };
+		1F7B08A8828C00A9D0E26A28 /* Ads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ads.swift; sourceTree = "<group>"; };
 		362A40A377508B0609BE2A8A /* PixelifySans-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "PixelifySans-OFL.txt"; sourceTree = "<group>"; };
 		38CE7DD60B2ABD75F3BA0F21 /* TVDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDiscovery.swift; sourceTree = "<group>"; };
 		393AF2DF073CFE1E5BEB9249 /* PixelKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelKit.swift; sourceTree = "<group>"; };
 		401541809F873B0AF003115F /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 		45D67AF9120FA66BCDB17983 /* PixelifySans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PixelifySans.ttf; sourceTree = "<group>"; };
+		4FB0EFFA0C6DA1D6170DC5F4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		52DC0511EFE3D7E5010480D4 /* AdStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdStrip.swift; sourceTree = "<group>"; };
 		6656E0CF7A63AEB37ED38591 /* Controlinho.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Controlinho.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		692A96B8B79113F4DF350559 /* TVKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVKey.swift; sourceTree = "<group>"; };
 		706A49FCBED7C20BF00B52A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -78,19 +88,33 @@
 		86E1D111528263461F70C9E8 /* ControlinhoControls.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = ControlinhoControls.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		96C524BDC53B80BE107D3897 /* LocalNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNetwork.swift; sourceTree = "<group>"; };
 		98E20B663F0D2C680061AA47 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		99773FA309FD7C36BB51BDCE /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		99BCABCD3D801BEA31DC41C6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		A47397007452E7E39ED045D8 /* ControlinhoControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlinhoControls.swift; sourceTree = "<group>"; };
 		A68C2BD40270E666C63746B3 /* LGConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LGConnection.swift; sourceTree = "<group>"; };
 		BEF22A80F2343A8A496300FE /* Controlinho.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Controlinho.entitlements; sourceTree = "<group>"; };
 		C2DF91B2359E05B801F47307 /* RemoteIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteIntents.swift; sourceTree = "<group>"; };
+		CAC0B12A97A3D0FD07B57FA7 /* PlusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusView.swift; sourceTree = "<group>"; };
 		D09178757A3903C31E267EEB /* PixelForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelForm.swift; sourceTree = "<group>"; };
 		D09DF689F1F6B730943F61C6 /* ControlinhoControls.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ControlinhoControls.entitlements; sourceTree = "<group>"; };
 		D4AB10C9794FD2BEF56E9E0A /* SamsungDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamsungDriver.swift; sourceTree = "<group>"; };
 		D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
+		D808B82538A801730C831553 /* Purchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Purchases.swift; sourceTree = "<group>"; };
 		E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlinhoApp.swift; sourceTree = "<group>"; };
 		F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
 		F4B8B7024DA750C8ADA0EC0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CC2A8FA3E4A0F51F813E34DD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F607749C95A68656C532350D /* GoogleMobileAds in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		1010091EEB8B8AAC15061AEC /* Controlinho */ = {
@@ -100,6 +124,7 @@
 				BEF22A80F2343A8A496300FE /* Controlinho.entitlements */,
 				E591FC35BD414F763DA601D7 /* ControlinhoApp.swift */,
 				039ABD375320512AB992A15F /* Info.plist */,
+				99773FA309FD7C36BB51BDCE /* PrivacyInfo.xcprivacy */,
 				9E29E1C9DF9BC6F2F306383C /* Models */,
 				CB2F8ED182F96E5967A6408D /* Resources */,
 				2CC8565363CCDF9D6FF074FC /* Services */,
@@ -114,6 +139,7 @@
 				D09DF689F1F6B730943F61C6 /* ControlinhoControls.entitlements */,
 				A47397007452E7E39ED045D8 /* ControlinhoControls.swift */,
 				F4B8B7024DA750C8ADA0EC0F /* Info.plist */,
+				4FB0EFFA0C6DA1D6170DC5F4 /* PrivacyInfo.xcprivacy */,
 				8607A04D01B96788498A6FE1 /* QuickRemote.swift */,
 				C2DF91B2359E05B801F47307 /* RemoteIntents.swift */,
 			);
@@ -123,9 +149,11 @@
 		2CC8565363CCDF9D6FF074FC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				1F7B08A8828C00A9D0E26A28 /* Ads.swift */,
 				A68C2BD40270E666C63746B3 /* LGConnection.swift */,
 				780189DA66685C31824DBB09 /* LGDriver.swift */,
 				96C524BDC53B80BE107D3897 /* LocalNetwork.swift */,
+				D808B82538A801730C831553 /* Purchases.swift */,
 				D4AB10C9794FD2BEF56E9E0A /* SamsungDriver.swift */,
 				F3373CC5BA9B26BB3FE41898 /* SharedStore.swift */,
 				1407C88ADF176B1A98365716 /* TVClient.swift */,
@@ -174,9 +202,11 @@
 		AAA04B3377C46E67A5E2DEC5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				52DC0511EFE3D7E5010480D4 /* AdStrip.swift */,
 				99BCABCD3D801BEA31DC41C6 /* Components.swift */,
 				D09178757A3903C31E267EEB /* PixelForm.swift */,
 				393AF2DF073CFE1E5BEB9249 /* PixelKit.swift */,
+				CAC0B12A97A3D0FD07B57FA7 /* PlusView.swift */,
 				D6CD3EF285D2D87F1F12AC13 /* RemoteView.swift */,
 				98E20B663F0D2C680061AA47 /* SetupView.swift */,
 				13ABE684518247FFAFF8681A /* TVSettingsView.swift */,
@@ -209,6 +239,7 @@
 			buildPhases = (
 				DA7FCB417293176FA629FDC0 /* Sources */,
 				87D2C4B60ED8100396F5DE7E /* Resources */,
+				CC2A8FA3E4A0F51F813E34DD /* Frameworks */,
 				6DED0057D92BC49494C3F686 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -218,6 +249,7 @@
 			);
 			name = Controlinho;
 			packageProductDependencies = (
+				9AACD35952536E35565917AE /* GoogleMobileAds */,
 			);
 			productName = Controlinho;
 			productReference = 6656E0CF7A63AEB37ED38591 /* Controlinho.app */;
@@ -228,6 +260,7 @@
 			buildConfigurationList = 832DAD76155145A4E513ACA3 /* Build configuration list for PBXNativeTarget "ControlinhoControls" */;
 			buildPhases = (
 				74FA444E346843C2C28D15B8 /* Sources */,
+				57B26500348B6255805E0288 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -266,6 +299,9 @@
 			);
 			mainGroup = 836FA063950BEDFC8647E3FD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B7EAF3E9149B72A373C8A3F3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3A97736D9DA7797BA1E9ED66 /* Products */;
 			projectDirPath = "";
@@ -278,6 +314,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		57B26500348B6255805E0288 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				999C4820289BF87FE83E331C /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		87D2C4B60ED8100396F5DE7E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -285,6 +329,7 @@
 				55A6D99838424791C575C6EE /* Assets.xcassets in Resources */,
 				C6E305B3862E876108F2FE01 /* PixelifySans-OFL.txt in Resources */,
 				BBFC217CE91423FDA46B95B8 /* PixelifySans.ttf in Resources */,
+				5EE7089CDC611518C2EF57A4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +354,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4BC98CAA96C52B9EDFCBED4 /* AdStrip.swift in Sources */,
+				4BF1F7261495057DC7552E7B /* Ads.swift in Sources */,
 				E0EF47E82060BD49074D3128 /* Components.swift in Sources */,
 				F8F77A363B99ADDC397C065E /* ControlinhoApp.swift in Sources */,
 				A55CD5E7E4F0A3B4F8F1F2A2 /* LGConnection.swift in Sources */,
@@ -316,6 +363,8 @@
 				CD04665D37878EA34002B98D /* LocalNetwork.swift in Sources */,
 				D1ACF6813885C501D0989E68 /* PixelForm.swift in Sources */,
 				7CD2E49F0B3CA0FACCD7237E /* PixelKit.swift in Sources */,
+				0AE5515EA985C79ECEC69324 /* PlusView.swift in Sources */,
+				E0700D4213895A775416E0B6 /* Purchases.swift in Sources */,
 				8537B6CF3EFFB40C7D7028DC /* RemoteView.swift in Sources */,
 				C8261DED56743A7DD400F417 /* SamsungDriver.swift in Sources */,
 				D3B0D42415D49B5574C85FD3 /* SetupView.swift in Sources */,
@@ -399,6 +448,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
 			buildSettings = {
+				ADMOB_APP_ID = "ca-app-pub-3940256099942544~1458002511";
+				ADMOB_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/2435281174";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Controlinho/Controlinho.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -418,6 +469,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 401541809F873B0AF003115F /* Signing.xcconfig */;
 			buildSettings = {
+				ADMOB_APP_ID = "ca-app-pub-3940256099942544~1458002511";
+				ADMOB_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/2435281174";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Controlinho/Controlinho.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -567,6 +620,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B7EAF3E9149B72A373C8A3F3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9AACD35952536E35565917AE /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B7EAF3E9149B72A373C8A3F3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2B3A40A037E2BE6A4F7AC694 /* Project object */;
 }

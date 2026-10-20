@@ -1,0 +1,33 @@
+{
+  "identifier" : "6F3D2C1A",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : true,
+      "internalID" : "6740000001",
+      "localizations" : [
+        {
+          "description" : "Every TV in the house, and no ads.",
+          "displayName" : "Controlinho Plus",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.robhouseblues.controlinho.plus",
+      "referenceName" : "Controlinho Plus",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

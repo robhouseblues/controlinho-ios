@@ -3,9 +3,15 @@ import SwiftUI
 struct RemoteView: View {
     @Environment(TVStore.self) private var store
     @Environment(TVClient.self) private var client
+    @Environment(Purchases.self) private var purchases
+    @Environment(Ads.self) private var ads
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var showNumbers = false
+    @State private var showTVs = false
     @State private var showSettings = false
+    @State private var showSetup = false
+    @State private var showPlus = false
     @State private var wake: WakeStatus?
     @State private var launchingApp: String?
     @State private var appMessage: String?
@@ -36,7 +42,8 @@ struct RemoteView: View {
                 }
                 gap
 
-                DPad { client.send($0) }
+                // A little smaller in the free version, to make room for the ad.
+                DPad(cell: showsAds ? 58 : 64) { client.send($0) }
                 gap
 
                 HStack {
@@ -79,31 +86,58 @@ struct RemoteView: View {
                 Spacer(minLength: 0)
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, 12)
+            .padding(.bottom, showsAds ? 0 : 12)
             // Fill the screen so the gaps can stretch; they shrink back when a banner shows.
             .frame(minHeight: geo.size.height)
         }
         .scrollBounceBehavior(.basedOnSize)
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if showsAds { AdStrip() }
+        }
         .background(IronFloor())
         .overlay {
-            if showNumbers {
+            if showNumbers || showTVs {
                 ZStack(alignment: .bottom) {
                     Color.black.opacity(0.55)
                         .ignoresSafeArea()
-                        .onTapGesture { showNumbers = false }
+                        .onTapGesture {
+                            showNumbers = false
+                            showTVs = false
+                        }
                         .transition(.opacity)
-                    NumberPad(onKey: { client.send($0) }, onClose: { showNumbers = false })
+                    if showNumbers {
+                        NumberPad(onKey: { client.send($0) }, onClose: { showNumbers = false })
+                            .transition(.move(edge: .bottom))
+                    }
+                    if showTVs {
+                        TVPicker(tvs: store.tvs, selected: store.tv?.host, onSelect: select, onAdd: {
+                            showTVs = false
+                            showSetup = true
+                        }, onClose: { showTVs = false })
                         .transition(.move(edge: .bottom))
+                    }
                 }
             }
         }
         .animation(.easeOut(duration: 0.18), value: showNumbers)
+        .animation(.easeOut(duration: 0.18), value: showTVs)
         .fullScreenCover(isPresented: $showSettings) {
             TVSettingsView()
         }
+        .fullScreenCover(isPresented: $showSetup) { SetupView() }
+        .fullScreenCover(isPresented: $showPlus) { PlusView() }
+        // Ads (and the consent they need) only start once StoreKit has confirmed this
+        // isn't a Plus owner, and only while the app is in front, as the tracking prompt requires.
+        .task(id: wantsAds) {
+            if wantsAds { await ads.start() }
+        }
         .onChange(of: client.state) { _, state in
             if state == .connected { wake = nil }
+        }
+        .onChange(of: store.tv?.host) {
+            wake = nil
+            appMessage = nil
         }
         .onChange(of: store.tv?.wakeMAC) { _, mac in
             if mac != nil, wake == .notSetUp { wake = nil }
@@ -116,10 +150,20 @@ struct RemoteView: View {
         HStack(spacing: 10) {
             Mascot(hops: client.commandCount)
             VStack(alignment: .leading, spacing: 2) {
-                Text(store.tv?.name ?? "TV")
-                    .pixelFont(19, weight: .bold)
-                    .foregroundStyle(Palette.textLight)
-                    .lineLimit(1)
+                if purchases.hasPlus {
+                    Button { showTVs = true } label: {
+                        HStack(spacing: 8) {
+                            tvName
+                            PixelIcon(PixelArt(rows: PixelArt.arrowUp.rows.reversed()), scale: 2)
+                                .foregroundStyle(Palette.textSoft)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Choose another TV")
+                } else {
+                    tvName
+                }
                 HStack(spacing: 6) {
                     PixelIcon(.gem, scale: 2)
                         .foregroundStyle(statusColor)
@@ -129,6 +173,16 @@ struct RemoteView: View {
                 }
             }
             Spacer()
+            if !purchases.hasPlus {
+                Button { showPlus = true } label: {
+                    Text("PLUS")
+                        .pixelFont(14, weight: .bold)
+                        .frame(height: 40)
+                        .padding(.horizontal, 8)
+                }
+                .buttonStyle(PixelButtonStyle(tone: .brass, depth: Pixel.unit))
+                .accessibilityLabel("Controlinho Plus: more TVs, no ads")
+            }
             // A plain button rather than a Menu: menus close whenever the connection state
             // re-renders the header, which happens constantly while reconnecting.
             Button { showSettings = true } label: {
@@ -140,6 +194,13 @@ struct RemoteView: View {
         .padding(.leading, Pixel.unit * 2)
         .pixelPanel(.copper, padding: Pixel.unit * 3)
         .padding(.top, 6)
+    }
+
+    private var tvName: some View {
+        Text(store.tv?.name ?? "TV")
+            .pixelFont(19, weight: .bold)
+            .foregroundStyle(Palette.textLight)
+            .lineLimit(1)
     }
 
     @ViewBuilder
@@ -275,6 +336,21 @@ struct RemoteView: View {
 
     // MARK: Helpers
 
+    private var showsAds: Bool {
+        ads.isReady && !purchases.hasPlus
+    }
+
+    private var wantsAds: Bool {
+        scenePhase == .active && purchases.hasChecked && !purchases.hasPlus
+    }
+
+    private func select(_ tv: SavedTV) {
+        showTVs = false
+        guard tv.host != store.tv?.host else { return }
+        store.select(tv.host)
+        client.connect(to: tv)
+    }
+
     private func power() {
         guard client.state != .connected, let tv = store.tv else {
             client.send(.power)
@@ -365,6 +441,45 @@ private struct Mascot: View {
     }
 }
 
+/// The saved TVs in a copper panel that slides up over the remote (Plus).
+private struct TVPicker: View {
+    let tvs: [SavedTV]
+    let selected: String?
+    let onSelect: (SavedTV) -> Void
+    let onAdd: () -> Void
+    let onClose: () -> Void
+
+    var body: some View {
+        VStack(spacing: 14) {
+            HStack {
+                Text("Your TVs")
+                    .pixelFont(17, weight: .bold)
+                    .foregroundStyle(Palette.textLight)
+                Spacer()
+                Button(action: onClose) {
+                    Text("Close")
+                        .pixelFont(15, weight: .bold)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                }
+                .buttonStyle(PixelButtonStyle(tone: .iron, depth: Pixel.unit))
+            }
+            VStack(spacing: 0) {
+                ForEach(Array(tvs.enumerated()), id: \.element.host) { index, tv in
+                    if index > 0 { PixelDivider() }
+                    PixelActionRow(title: tv.name, color: Palette.text, checked: tv.host == selected) { onSelect(tv) }
+                }
+                PixelDivider()
+                PixelActionRow(title: "Add a TV", action: onAdd)
+            }
+            .pixelPanel(.iron, padding: Pixel.unit * 2)
+        }
+        .pixelPanel(.copper, padding: Pixel.unit * 5)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
+    }
+}
+
 /// Digit keys in a copper panel that slides up over the remote.
 private struct NumberPad: View {
     let onKey: (TVKey) -> Void
@@ -412,4 +527,6 @@ private struct NumberPad: View {
     RemoteView()
         .environment(TVStore())
         .environment(TVClient())
+        .environment(Purchases())
+        .environment(Ads())
 }

@@ -4,6 +4,8 @@ import SwiftUI
 struct ControlinhoApp: App {
     @State private var store = TVStore()
     @State private var client = TVClient()
+    @State private var purchases = Purchases()
+    @State private var ads = Ads()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -11,13 +13,13 @@ struct ControlinhoApp: App {
             RootView()
                 .environment(store)
                 .environment(client)
+                .environment(purchases)
+                .environment(ads)
                 .preferredColorScheme(.dark)
                 .tint(Palette.brass)
                 .onAppear {
-                    client.onTokenUpdate = { [store] token in store.updateToken(token) }
-                    client.onPortConfirmed = { [store] legacy in
-                        if store.tv?.usesLegacyPort != legacy { store.tv?.usesLegacyPort = legacy }
-                    }
+                    client.onTokenUpdate = { [store] token, host in store.updateToken(token, for: host) }
+                    client.onPortConfirmed = { [store] legacy, host in store.updatePort(legacy: legacy, for: host) }
                     client.onConnected = { [store, client] in
                         Task {
                             if let info = await client.fetchInfo() { store.update(from: info) }
@@ -28,6 +30,7 @@ struct ControlinhoApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
                     case .active:
+                        store.reload()
                         client.reconnectIfNeeded()
                     case .background: client.disconnect()
                     default: break

@@ -4,6 +4,7 @@ import SwiftUI
 struct SetupView: View {
     @Environment(TVStore.self) private var store
     @Environment(TVClient.self) private var client
+    @Environment(Purchases.self) private var purchases
     @Environment(\.dismiss) private var dismiss
 
     @State private var found: [DiscoveredTV] = []
@@ -11,10 +12,24 @@ struct SetupView: View {
     @State private var manualHost = ""
     @State private var manualError: String?
     @State private var isCheckingManual = false
+    @State private var showPlus = false
 
     var body: some View {
         NavigationStack {
             PixelPage {
+                if let current = store.tv, !purchases.hasPlus {
+                    PixelSection(title: "One TV in the free version") {
+                        Text("Connecting another TV replaces \(current.name). Plus keeps them all.")
+                            .pixelFont(15)
+                            .foregroundStyle(Palette.textSoft)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 10)
+                        PixelDivider()
+                        PixelActionRow(title: "Get Plus") { showPlus = true }
+                    }
+                }
+
                 PixelSection(title: "On this network", trailing: scanButton) {
                     if isScanning && found.isEmpty {
                         HStack(spacing: 12) {
@@ -78,6 +93,7 @@ struct SetupView: View {
             }
             .pixelScreen("Connect a TV", leading: store.tv == nil ? nil : PixelBarAction(title: "Cancel") { dismiss() })
             .task { await scan() }
+            .fullScreenCover(isPresented: $showPlus) { PlusView() }
         }
     }
 
@@ -115,11 +131,11 @@ struct SetupView: View {
 
     private func pair(_ tv: SavedTV) {
         var tv = tv
-        if let current = store.tv, current.host == tv.host {
-            tv.token = current.token
-            tv.manualMAC = current.manualMAC
+        if let earlier = store.tvs.first(where: { $0.host == tv.host }) {
+            tv.token = earlier.token
+            tv.manualMAC = earlier.manualMAC
         }
-        store.tv = tv
+        store.add(tv, replacingOthers: !purchases.hasPlus)
         client.connect(to: tv)
         dismiss()
     }

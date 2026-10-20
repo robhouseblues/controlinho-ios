@@ -105,7 +105,7 @@ actor RemoteConnection {
                 tv.usesLegacyPort = legacy
                 changed = true
             }
-            if changed { SharedStore.saveTV(tv) }
+            if changed { SharedStore.updateTV(tv) }
         } catch {
             socket.cancel(with: .goingAway, reason: nil)
             session.invalidateAndCancel()
@@ -206,7 +206,7 @@ actor LGQuickRemote {
         let legacy = await connection.usedLegacyPort
         guard tv.usesLegacyPort != legacy, var current = SharedStore.loadTV(), current.host == tv.host else { return }
         current.usesLegacyPort = legacy
-        SharedStore.saveTV(current)
+        SharedStore.updateTV(current)
     }
 
     private func keepAlive() {
