@@ -19,8 +19,7 @@ struct PlusView: View {
                         .scaledToFit()
                         .frame(width: 92, height: 76)
                         .accessibilityHidden(true)
-                    Text("Controlinho Plus")
-                        .pixelFont(26, weight: .bold)
+                    Text(pixel: "Controlinho Plus", size: 26, weight: .bold)
                         .foregroundStyle(Palette.textLight)
                     Text(purchases.hasPlus ? "Plus is on. Thank you!" : "Pay once, keep it forever.")
                         .pixelFont(16)
@@ -49,7 +48,7 @@ struct PlusView: View {
                                 if purchases.isWorking {
                                     ProgressView().tint(Palette.ink)
                                 } else {
-                                    Text(buyTitle).pixelFont(19, weight: .bold)
+                                    Text(pixel: buyTitle, size: 19, weight: .bold)
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -63,8 +62,7 @@ struct PlusView: View {
                         Button {
                             Task { await purchases.restore() }
                         } label: {
-                            Text("Restore purchases")
-                                .pixelFont(15, weight: .bold)
+                            Text(pixel: "Restore purchases", size: 15, weight: .bold)
                                 .foregroundStyle(Palette.accent)
                         }
                         .buttonStyle(.plain)
@@ -108,7 +106,7 @@ struct PlusView: View {
                 .foregroundStyle(Palette.accent)
                 .padding(.top, 4)
             VStack(alignment: .leading, spacing: 3) {
-                Text(title).pixelFont(17, weight: .semibold).foregroundStyle(Palette.text)
+                Text(pixel: title, size: 17, weight: .semibold).foregroundStyle(Palette.text)
                 Text(detail)
                     .pixelFont(14)
                     .foregroundStyle(Palette.textSoft)

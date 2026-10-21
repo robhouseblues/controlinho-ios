@@ -80,6 +80,19 @@ extension Text {
     func pixelFont(_ size: CGFloat, weight: Font.Weight = .regular) -> Text {
         font(.pixel(size, weight: weight)).tracking(0.4)
     }
+
+    /// Pixel font text in a heavier weight. The font's bold capital C barely opens and reads
+    /// as an O ("Oontrolinho"), so each C keeps the regular weight.
+    init(pixel string: String, size: CGFloat, weight: Font.Weight) {
+        var text = AttributedString(string)
+        text.font = .pixel(size, weight: weight)
+        var start = text.startIndex
+        while let range = text[start...].range(of: "C") {
+            text[range].font = .pixel(size)
+            start = range.upperBound
+        }
+        self = Text(text).tracking(0.4)
+    }
 }
 
 // MARK: Panels

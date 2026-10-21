@@ -175,8 +175,7 @@ struct RemoteView: View {
             Spacer()
             if !purchases.hasPlus {
                 Button { showPlus = true } label: {
-                    Text("PLUS")
-                        .pixelFont(14, weight: .bold)
+                    Text(pixel: "PLUS", size: 14, weight: .bold)
                         .frame(height: 40)
                         .padding(.horizontal, 8)
                 }
@@ -197,8 +196,7 @@ struct RemoteView: View {
     }
 
     private var tvName: some View {
-        Text(store.tv?.name ?? "TV")
-            .pixelFont(19, weight: .bold)
+        Text(pixel: store.tv?.name ?? "TV", size: 19, weight: .bold)
             .foregroundStyle(Palette.textLight)
             .lineLimit(1)
     }
@@ -268,8 +266,7 @@ struct RemoteView: View {
 
     private func bannerButton(_ title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Text(title)
-                .font(.pixel(15, weight: .bold))
+            Text(pixel: title, size: 15, weight: .bold)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
         }
@@ -290,8 +287,7 @@ struct RemoteView: View {
                                 if launchingApp == app.id {
                                     ProgressView().tint(Palette.textLight)
                                 } else {
-                                    Text(app.initial)
-                                        .font(.pixel(24, weight: .bold))
+                                    Text(pixel: app.initial, size: 24, weight: .bold)
                                         .foregroundStyle(Palette.textLight)
                                 }
                             }
@@ -452,13 +448,11 @@ private struct TVPicker: View {
     var body: some View {
         VStack(spacing: 14) {
             HStack {
-                Text("Your TVs")
-                    .pixelFont(17, weight: .bold)
+                Text(pixel: "Your TVs", size: 17, weight: .bold)
                     .foregroundStyle(Palette.textLight)
                 Spacer()
                 Button(action: onClose) {
-                    Text("Close")
-                        .pixelFont(15, weight: .bold)
+                    Text(pixel: "Close", size: 15, weight: .bold)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
                 }
@@ -489,13 +483,11 @@ private struct NumberPad: View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14), count: 3)
         VStack(spacing: 14) {
             HStack {
-                Text("Channel number")
-                    .pixelFont(17, weight: .bold)
+                Text(pixel: "Channel number", size: 17, weight: .bold)
                     .foregroundStyle(Palette.textLight)
                 Spacer()
                 Button(action: onClose) {
-                    Text("Close")
-                        .pixelFont(15, weight: .bold)
+                    Text(pixel: "Close", size: 15, weight: .bold)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
                 }
@@ -514,8 +506,7 @@ private struct NumberPad: View {
 
     private func digit(_ n: Int) -> some View {
         Button { onKey(.digit(n)) } label: {
-            Text("\(n)")
-                .font(.pixel(28, weight: .bold))
+            Text(pixel: "\(n)", size: 28, weight: .bold)
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
         }

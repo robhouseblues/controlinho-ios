@@ -52,7 +52,7 @@ struct SetupView: View {
                                 PixelIcon(.source).foregroundStyle(Palette.accent)
                                 VStack(alignment: .leading, spacing: 2) {
                                     HStack(spacing: 8) {
-                                        Text(tv.name).pixelFont(17, weight: .semibold).foregroundStyle(Palette.text)
+                                        Text(pixel: tv.name, size: 17, weight: .semibold).foregroundStyle(Palette.text)
                                         if tv.brand.isBeta { PixelBadge(text: "BETA") }
                                     }
                                     Text([tv.model, tv.host].compactMap { $0 }.joined(separator: " · "))
@@ -101,8 +101,7 @@ struct SetupView: View {
         guard !isScanning else { return nil }
         return AnyView(
             Button { Task { await scan() } } label: {
-                Text("Scan again")
-                    .pixelFont(14, weight: .bold)
+                Text(pixel: "Scan again", size: 14, weight: .bold)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
             }

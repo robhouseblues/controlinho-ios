@@ -62,8 +62,7 @@ struct DPad: View {
             GridRow {
                 arrow(.left, rotation: -90)
                 Button { onKey(.enter) } label: {
-                    Text("OK")
-                        .font(.pixel(22, weight: .bold))
+                    Text(pixel: "OK", size: 22, weight: .bold)
                         .frame(width: cell, height: cell - Pixel.unit * 2)
                 }
                 .buttonStyle(PixelButtonStyle(tone: .brass))

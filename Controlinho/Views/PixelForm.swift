@@ -34,8 +34,7 @@ struct PixelSection<Content: View>: View {
             if title != nil || trailing != nil {
                 HStack {
                     if let title {
-                        Text(title)
-                            .pixelFont(16, weight: .bold)
+                        Text(pixel: title, size: 16, weight: .bold)
                             .foregroundStyle(Palette.textLight)
                     }
                     Spacer()
@@ -99,8 +98,7 @@ struct PixelBadge: View {
     let text: String
 
     var body: some View {
-        Text(text)
-            .pixelFont(11, weight: .bold)
+        Text(pixel: text, size: 11, weight: .bold)
             .foregroundStyle(PixelTone.brass.content)
             .padding(.horizontal, 5)
             .padding(.vertical, 2)
@@ -118,7 +116,7 @@ struct PixelRowLabel: View {
 
     var body: some View {
         HStack {
-            Text(title).pixelFont(16, weight: .semibold).foregroundStyle(color)
+            Text(pixel: title, size: 16, weight: .semibold).foregroundStyle(color)
             Spacer()
             if checked {
                 PixelIcon(.check, scale: 2).foregroundStyle(Palette.accent)
@@ -205,8 +203,7 @@ struct PixelTopBar: View {
 
     var body: some View {
         ZStack {
-            Text(title)
-                .pixelFont(19, weight: .bold)
+            Text(pixel: title, size: 19, weight: .bold)
                 .foregroundStyle(Palette.textLight)
                 .lineLimit(1)
                 .padding(.horizontal, 90)
@@ -227,8 +224,7 @@ struct PixelTopBar: View {
 
     private func button(_ item: PixelBarAction) -> some View {
         Button(action: item.action) {
-            Text(item.title)
-                .pixelFont(16, weight: .bold)
+            Text(pixel: item.title, size: 16, weight: .bold)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
         }
