@@ -10,6 +10,7 @@ final class SamsungDriver: TVDriver {
     var onStateChange: ((TVConnectionState) -> Void)?
     var onTokenUpdate: ((String) -> Void)?
     var onPortConfirmed: ((Bool) -> Void)?
+    var onKeyboardChange: ((Bool) -> Void)?
 
     private var state: TVConnectionState = .disconnected {
         didSet { if state != oldValue { onStateChange?(state) } }
@@ -20,6 +21,8 @@ final class SamsungDriver: TVDriver {
     private var useLegacyPort: Bool
     private var pending: [String] = []
     private var approvalTimer: Task<Void, Never>?
+    /// Some TVs only take text after a "text received" broadcast at the start of each entry.
+    private var textStarted = false
 
     init(tv: SavedTV) {
         self.tv = tv
@@ -150,6 +153,11 @@ final class SamsungDriver: TVDriver {
         case "ms.channel.timeOut":
             approvalTimer?.cancel()
             state = .failed("Timed out waiting for you to accept on the TV.")
+        case "ms.remote.imeStart":
+            onKeyboardChange?(true)
+        case "ms.remote.imeEnd":
+            textStarted = false
+            onKeyboardChange?(false)
         default:
             break
         }
@@ -187,6 +195,27 @@ final class SamsungDriver: TVDriver {
             ])
         }
         return .launched
+    }
+
+    /// The TV takes the whole text each time and replaces what's in the box with it.
+    func setText(_ text: String) {
+        if !textStarted {
+            enqueue(["method": "ms.channel.emit", "params": ["event": "custom.remote.textReceived", "to": "broadcast"]])
+            textStarted = true
+        }
+        enqueue([
+            "method": "ms.remote.control",
+            "params": [
+                "Cmd": Data(text.utf8).base64EncodedString(),
+                "DataOfCmd": "base64",
+                "TypeOfRemote": "SendInputString",
+            ],
+        ])
+    }
+
+    func submitText() {
+        enqueue(["method": "ms.remote.control", "params": ["TypeOfRemote": "SendInputEnd"]])
+        textStarted = false
     }
 
     /// `POST /api/v2/applications/<id>`; returns the HTTP status, or 0 if the TV didn't answer.

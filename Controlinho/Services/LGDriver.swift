@@ -6,6 +6,7 @@ final class LGDriver: TVDriver {
     var onStateChange: ((TVConnectionState) -> Void)?
     var onTokenUpdate: ((String) -> Void)?
     var onPortConfirmed: ((Bool) -> Void)?
+    var onKeyboardChange: ((Bool) -> Void)?
 
     private var tv: SavedTV
     private let connection: LGConnection
@@ -15,6 +16,9 @@ final class LGDriver: TVDriver {
     private var connecting: Task<Bool, Never>?
     /// Presses run one after another, in the order they were made.
     private var lastCommand: Task<Void, Never>?
+    /// What the TV's text box holds, as far as we know, so each edit sends only the change.
+    private var sentText = ""
+    private var keyboardOpen = false
 
     init(tv: SavedTV) {
         self.tv = tv
@@ -41,13 +45,32 @@ final class LGDriver: TVDriver {
     }
 
     func send(_ key: TVKey) {
+        let wake = wakeAction
+        perform { try await $0.press(key, wake: wake) }
+    }
+
+    func setText(_ text: String) {
+        // Keep what both versions start with; delete the rest and type the new ending.
+        let kept = zip(sentText, text).prefix { $0 == $1 }.count
+        let deleting = sentText.count - kept
+        let inserting = String(text.dropFirst(kept))
+        sentText = text
+        perform { try await $0.type(deleting: deleting, inserting: inserting) }
+    }
+
+    func submitText() {
+        sentText = ""
+        perform { try await $0.sendEnter() }
+    }
+
+    /// Runs a command once connected, after the ones before it.
+    private func perform(_ command: @escaping @Sendable (LGConnection) async throws -> Void) {
         let previous = lastCommand
         let connection = connection
-        let wake = wakeAction
         lastCommand = Task { [weak self] in
             await previous?.value
             guard let self, await self.ensureConnected().value else { return }
-            try? await connection.press(key, wake: wake)
+            try? await command(connection)
         }
     }
 
@@ -98,6 +121,9 @@ final class LGDriver: TVDriver {
                 }
                 self.onPortConfirmed?(legacy)
                 self.state = .connected
+                try? await connection.watchKeyboard { [weak self] open in
+                    Task { @MainActor in self?.keyboardChanged(open) }
+                }
                 return true
             } catch LGError.notPaired {
                 self?.connecting = nil
@@ -110,6 +136,15 @@ final class LGDriver: TVDriver {
         }
         connecting = task
         return task
+    }
+
+    private func keyboardChanged(_ open: Bool) {
+        // The TV repeats its keyboard state as the text changes; only react to it opening
+        // or closing. A newly opened box starts empty as far as we know.
+        guard open != keyboardOpen else { return }
+        keyboardOpen = open
+        sentText = ""
+        onKeyboardChange?(open)
     }
 
     private func connectionLost() {

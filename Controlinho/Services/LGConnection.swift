@@ -30,6 +30,9 @@ actor LGConnection {
     private var nextID = 1
     private var onPrompt: (@Sendable () -> Void)?
     private var onClose: (@Sendable () -> Void)?
+    private var onKeyboard: (@Sendable (Bool) -> Void)?
+
+    private static let keyboardID = "keyboard"
 
     init(host: String, clientKey: String?, preferLegacyPort: Bool) {
         self.host = host
@@ -196,6 +199,13 @@ actor LGConnection {
             return
         }
 
+        if id == Self.keyboardID {
+            if let widget = payload["currentWidget"] as? [String: Any] {
+                onKeyboard?(widget["focus"] as? Bool ?? false)
+            }
+            return
+        }
+
         guard let id, let continuation = pending.removeValue(forKey: id) else { return }
         if type == "error" {
             continuation.resume(throwing: LGError.requestFailed(json["error"] as? String ?? "Request failed"))
@@ -295,6 +305,26 @@ actor LGConnection {
         default:
             try await fire("system/turnOff")
         }
+    }
+
+    /// Reports when the TV shows or hides its on-screen keyboard. Needs a new call after
+    /// each reconnect.
+    func watchKeyboard(_ onChange: @escaping @Sendable (Bool) -> Void) async throws {
+        guard let socket, registered else { throw LGError.unreachable }
+        onKeyboard = onChange
+        let message = ["type": "subscribe", "id": Self.keyboardID, "uri": "ssap://com.webos.service.ime/registerRemoteKeyboard"]
+        try await socket.send(.string(Self.json(message)))
+    }
+
+    /// Edits the text box the TV's keyboard is filling: deletes `count` characters before
+    /// the cursor, then types `text`.
+    func type(deleting count: Int, inserting text: String) async throws {
+        if count > 0 { try await request("com.webos.service.ime/deleteCharacters", ["count": count]) }
+        if !text.isEmpty { try await request("com.webos.service.ime/insertText", ["text": text, "replace": 0]) }
+    }
+
+    func sendEnter() async throws {
+        try await request("com.webos.service.ime/sendEnterKey")
     }
 
     func launch(appID: String) async throws {

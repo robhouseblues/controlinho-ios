@@ -8,6 +8,7 @@ struct RemoteView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var showNumbers = false
+    @State private var showTyping = false
     @State private var showTVs = false
     @State private var showSettings = false
     @State private var showSetup = false
@@ -37,6 +38,8 @@ struct RemoteView: View {
                     KeyButton(art: .source, label: "Source") { client.send(.source) }
                     Spacer()
                     KeyButton(art: .hash, label: "Numbers") { showNumbers = true }
+                    Spacer()
+                    KeyButton(art: .keyboard, label: "Type on TV") { showTyping = true }
                     Spacer()
                     KeyButton(art: .info, label: "Info") { client.send(.info) }
                 }
@@ -97,15 +100,28 @@ struct RemoteView: View {
         }
         .background(IronFloor())
         .overlay {
-            if showNumbers || showTVs {
+            if showNumbers || showTVs || showTyping {
                 ZStack(alignment: .bottom) {
                     Color.black.opacity(0.55)
                         .ignoresSafeArea()
                         .onTapGesture {
                             showNumbers = false
                             showTVs = false
+                            showTyping = false
                         }
                         .transition(.opacity)
+                    if showTyping {
+                        TypePanel(
+                            tvIsAsking: client.isKeyboardOpen,
+                            onChange: { client.setText($0) },
+                            onSubmit: {
+                                client.submitText()
+                                showTyping = false
+                            },
+                            onClose: { showTyping = false }
+                        )
+                        .transition(.move(edge: .bottom))
+                    }
                     if showNumbers {
                         NumberPad(onKey: { client.send($0) }, onClose: { showNumbers = false })
                             .transition(.move(edge: .bottom))
@@ -122,6 +138,15 @@ struct RemoteView: View {
         }
         .animation(.easeOut(duration: 0.18), value: showNumbers)
         .animation(.easeOut(duration: 0.18), value: showTVs)
+        .animation(.easeOut(duration: 0.18), value: showTyping)
+        // The TV opened a text box (a search, say): offer typing; close it when the TV is done.
+        .onChange(of: client.isKeyboardOpen) { _, open in
+            if open {
+                showNumbers = false
+                showTVs = false
+            }
+            showTyping = open
+        }
         .fullScreenCover(isPresented: $showSettings) {
             TVSettingsView()
         }
@@ -471,6 +496,68 @@ private struct TVPicker: View {
         .pixelPanel(.copper, padding: Pixel.unit * 5)
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
+    }
+}
+
+/// A text box in a copper panel that slides up over the remote. What's typed appears in the
+/// text box the TV is showing, as it's typed.
+private struct TypePanel: View {
+    /// Whether the TV has said it's waiting for text.
+    let tvIsAsking: Bool
+    let onChange: (String) -> Void
+    let onSubmit: () -> Void
+    let onClose: () -> Void
+
+    @State private var text = ""
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(pixel: "Type on TV", size: 17, weight: .bold)
+                    .foregroundStyle(Palette.textLight)
+                Spacer()
+                Button(action: onClose) {
+                    Text(pixel: "Close", size: 15, weight: .bold)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                }
+                .buttonStyle(PixelButtonStyle(tone: .iron, depth: Pixel.unit))
+            }
+            TextField("Search or type", text: $text)
+                .textFieldStyle(PixelFieldStyle())
+                .focused($isFocused)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.done)
+                .onSubmit(onSubmit)
+                .onChange(of: text) { _, value in onChange(value) }
+            if !tvIsAsking {
+                Text("Select a search or text box on the TV first. Some TV apps don't take text from a phone.")
+                    .pixelFont(13)
+                    .foregroundStyle(Palette.textLight.opacity(0.75))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            HStack(spacing: 12) {
+                Button { text = "" } label: {
+                    Text(pixel: "Clear", size: 16, weight: .bold)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                }
+                .buttonStyle(PixelButtonStyle(tone: .iron))
+                .disabled(text.isEmpty)
+                Button(action: onSubmit) {
+                    Text(pixel: "Done", size: 16, weight: .bold)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                }
+                .buttonStyle(PixelButtonStyle(tone: .brass))
+            }
+        }
+        .pixelPanel(.copper, padding: Pixel.unit * 5)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
+        .onAppear { isFocused = true }
     }
 }
 
