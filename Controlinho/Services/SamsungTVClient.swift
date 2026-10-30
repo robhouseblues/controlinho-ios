@@ -22,6 +22,9 @@ final class SamsungTVClient {
     /// Goes up by one for every key press or app launch, so the UI can react to it.
     private(set) var commandCount = 0
 
+    /// Whether the TV is showing its keyboard and waiting for text.
+    private(set) var isKeyboardOpen = false
+
     /// Called whenever the TV issues a new pairing token, so it can be persisted.
     var onTokenUpdate: ((String) -> Void)?
 
@@ -36,6 +39,8 @@ final class SamsungTVClient {
     private var useLegacyPort = false
     private var pending: [String] = []
     private var approvalTimer: Task<Void, Never>?
+    /// Some TVs only take text after a "text received" broadcast at the start of each entry.
+    private var textStarted = false
 
     @ObservationIgnored
     private lazy var session: URLSession = {
@@ -69,6 +74,7 @@ final class SamsungTVClient {
         task = nil
         pending.removeAll()
         state = .disconnected
+        isKeyboardOpen = false
     }
 
     private func open() {
@@ -168,6 +174,11 @@ final class SamsungTVClient {
         case "ms.channel.timeOut":
             approvalTimer?.cancel()
             state = .failed("Timed out waiting for you to accept on the TV.")
+        case "ms.remote.imeStart":
+            isKeyboardOpen = true
+        case "ms.remote.imeEnd":
+            textStarted = false
+            isKeyboardOpen = false
         default:
             break
         }
@@ -212,6 +223,30 @@ final class SamsungTVClient {
             ])
         }
         return .launched
+    }
+
+    /// Makes the text box the TV's keyboard is filling read `text`; the TV takes the whole
+    /// text each time and replaces what's in the box with it.
+    func setText(_ text: String) {
+        if !textStarted {
+            enqueue(["method": "ms.channel.emit", "params": ["event": "custom.remote.textReceived", "to": "broadcast"]])
+            textStarted = true
+        }
+        enqueue([
+            "method": "ms.remote.control",
+            "params": [
+                "Cmd": Data(text.utf8).base64EncodedString(),
+                "DataOfCmd": "base64",
+                "TypeOfRemote": "SendInputString",
+            ],
+        ])
+    }
+
+    /// Submits that text, like Done on the TV's own keyboard.
+    func submitText() {
+        commandCount += 1
+        enqueue(["method": "ms.remote.control", "params": ["TypeOfRemote": "SendInputEnd"]])
+        textStarted = false
     }
 
     /// `POST /api/v2/applications/<id>`; returns the HTTP status, or 0 if the TV didn't answer.
